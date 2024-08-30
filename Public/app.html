@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChatApp</title>
+
+  <link rel="stylesheet" href="Styles/app.css" />
+  <script src="./Scripts/app.js" defer></script>
+</head>
+
+<body>
+  <div class="page-container">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div id="username-heading">Stell0xF</div>
+
+      <div class="sidebar-body">
+        <div class="sb-section">
+          <div class="sb-label">Channels</div>
+
+          <ol class="contacts channels">
+            <li class="contact channel">GC 1</li>
+            <li class="contact channel">GC 2</li>
+            <li class="contact channel">GC 3</li>
+          </ol>
+        </div>
+
+        <div class="sb-section">
+          <div class="sb-label">People</div>
+
+          <ol class="contacts people">
+            <li class="contact person">Person 1</li>
+            <li class="contact person">Person 2</li>
+            <li class="contact person">Person 3</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="sb-footer">
+        <button id="logout-btn">Logout</button>
+        <button id="sb-collapse-btn" onclick="collapseSidebar()">&lt;</button>
+      </div>
+    </div>
+
+    <!-- Chat Area -->
+    <div class="chat-area" id="chatarea">
+
+      <div class="chat-body">
+        <div class="chat-header">Group Chat</div>
+
+        <ul class="messages" id="messages-container">
+          <li class="message outgoing-msg">m1</li>
+          <li class="message outgoing-msg">m4</li>
+          <li class="message incoming-msg">m5</li>
+          <li class="message outgoing-msg">m1</li>
+          <li class="message outgoing-msg">m4</li>
+          <li class="message incoming-msg">m5</li>
+          <li class="message outgoing-msg">m1</li>
+          <li class="message outgoing-msg">m4</li>
+          <li class="message incoming-msg">m5</li>
+          <li class="message incoming-msg">m5</li>
+          <li class="message outgoing-msg">m4</li>
+          <li class="message incoming-msg">m5</li>
+          <li class="message outgoing-msg">m1</li>
+          <li class="message outgoing-msg">m2</li>
+          <li class="message incoming-msg">m5</li>
+        </ul>
+      </div>
+  
+      <form onsubmit="sendMsg(); return false;" class="sender-bar">
+        <!-- <input
+              type=""
+              name="sender-field"
+              id="sender-field"
+              placeholder="Message"
+            /> -->
+
+        <input type="text" name="sender-field" id="sender-field" placeholder="Message" required>
+        <input type="submit" id="sender-btn" name="sender-btn" value="Send" />
+
+      </form>
+    </div>
+
+
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,12 @@
+:root {
+
+	--sidebar-bg-color: #181818;
+
+	--header-bg-color: #202025;
+	--header-fg-color: #eee;
+
+	--chatarea-bg-color: rgb(0, 204, 180);
+
+	--username-fsize: 2rem;
+	--message-fsize: 1rem;
+}

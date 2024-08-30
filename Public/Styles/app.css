@@ -1,0 +1,160 @@
+@import url("./global-vars.css");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* outline: 0; */
+}
+
+
+.page-container {
+  display: flex;
+  flex-direction: rows;
+  min-height: 100vh;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  min-width: 12rem;
+  width: 20vw;
+  height: 100vh;
+
+  color: var(--header-fg-color);
+  background-color: var(--sidebar-bg-color);
+}
+
+#username-heading {
+  height: 10%;
+  font-size: var(--username-fsize);
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.sidebar-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 90%;
+  background: #000;
+}
+
+.sb-section {
+  margin: 20px 0;
+  padding: 10px 8px;
+  background-color: rgb(0, 40, 121);
+}
+
+.sb-label {
+  margin-bottom: 5px;
+}
+
+.contacts {
+  list-style-type: none;
+  background-color: maroon;
+  padding-left: 40px;
+}
+
+.contact {
+  margin: 10px 0px;
+  background-color: rgb(235, 10, 89);
+}
+
+/* Footer */
+.sb-footer {
+  padding: 10px 4px;
+  display: flex;
+  flex-direction: row;
+
+  justify-content: space-evenly;
+  background-color: yellow;
+  height: 10%;
+}
+
+#logout-btn {
+  width: 80%;
+}
+
+#sb-collapse-btn {
+  width: 10%;
+}
+
+/* ------- Chat AREA ------- */
+.chat-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  width: 100%;
+  height: 100vh;
+
+  padding: 10px;
+  background-color: var(--chatarea-bg-color);
+}
+
+.chat-body {
+  height: 88vh;
+}
+
+/* Chat Header */
+.chat-header {
+  height: 8%;
+  padding: 10px;
+
+  color: var(--header-fg-color);
+  background-color: var(--header-bg-color);
+}
+
+/* Messages */
+.messages {
+  display: flex;
+  flex-direction: column;
+  height: 92%;
+  overflow-y: auto;
+
+  padding: 5px;
+  background: linear-gradient(to bottom, cyan, tomato);
+  list-style-type: none;
+}
+
+.message {
+  margin: 10px 0;
+  width: fit-content;
+}
+
+.outgoing-msg {
+  background-color: darkred;
+}
+
+.incoming-msg {
+  background-color: green;
+  margin-left: auto;
+}
+
+/* Sender Bar */
+
+.sender-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  padding: 5px;
+  height: 8vh;
+
+  justify-content: space-around;
+  background-color: orangered;
+}
+
+#sender-field {
+  padding: 5px;
+  width: 82%;
+  height: 100%;
+}
+
+#sender-btn {
+  height: 100%;
+  width: 15%;
+}
