@@ -15,12 +15,14 @@
     <div class="sidebar" id="sidebar">
         <div class="sb-header">
             <div id="username-heading">Wayne</div>
+            <div class="sb-collapser" onclick="sidebarCollapser(0)">▲</div>
         </div>
 
         <div class="sidebar-body">
 
             <div class="sb-section">
-                <hr class="sb-line">
+                <div class="sb-line"></div>
+
                 <div class="sb-label">CHANNELS</div>
 
                 <div class="contacts">
@@ -34,14 +36,15 @@
                         <p>GC 3</p>
                     </div>
                 </div>
-                <hr class="sb-line">
+                <div class="sb-line"></div>
             </div>
 
             <div class="sb-section">
-                <hr class="sb-line">
+                <div class="sb-line"> </div>
+
                 <div class="sb-label">PEOPLE</div>
 
-                <ol class="contacts">
+                <div class="contacts">
                     <div class="contact"> <img src="./Res/icons/comment.svg" class="icon-img" alt="">
                         <p> Person 1</p>
                     </div>
@@ -51,8 +54,8 @@
                     <div class="contact"> <img src="./Res/icons/comment.svg" class="icon-img" alt="">
                         <p> Person 3</p>
                     </div>
-                </ol>
-                <hr class="sb-line">
+                </div>
+                <div class="sb-line"> </div>
             </div>
         </div>
 
@@ -63,24 +66,19 @@
         </div>
     </div>
 
+
     <!-- Chat Area -->
     <div class="chat-area" id="chatarea">
 
         <div class="chat-body">
             <div class="chat-header">
-                <div class="gc-prof-container"><img src="./Res/Images/butterfly.png" class="gc-prof-image" alt="profile-picture"></div>
+                <img src="./Res/Images/butterfly_128px.png" class="prof-image" alt="profile-picture">
                 <div class="header-title"> GC1</div>
+                <div class="sb-collapser" onclick="sidebarCollapser(1)">▼</div>
             </div>
 
-            <div class="messages" id="messages-container">
-            <!--    
-                <div class="message outgoing-msg">
-                    <div class="msg-sender"></div>
-                    <div class="msg-content">m1</div>
-                    <div class="msg-time">22:30</div>
-                </div>
-            -->
-            </div>
+            <div class="messages" id="messages-container"></div>
+
         </div>
 
         <div class="sender-bar">

@@ -29,8 +29,7 @@ function sendMsg() {
 
 	let currentTimestamp = getCurrentTime();
 
-
-	newMsg.innerHTML = msgContent;
+	msgContentDiv.innerHTML = msgContent;
 	msgTimeDiv.innerHTML = currentTimestamp
 
 	newMsg.classList.add('message');
@@ -104,6 +103,16 @@ function addRandomMessages(count) {
 	scrollMsgsToBottom();
 }
 
+function sidebarCollapser(expand) {
+	if (expand) {
+		sidebar.classList.add('sb-mobile');
+		sidebar.classList.remove('sidebar');
+	}
+	else {
+		sidebar.classList.add('sidebar');
+		sidebar.classList.remove('sb-mobile');
+	}
+}
 
 scrollMsgsToBottom();
 addRandomMessages(10);
