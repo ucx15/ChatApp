@@ -2,89 +2,101 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ChatApp</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChatApp</title>
 
-  <link rel="stylesheet" href="Styles/app.css" />
-  <script src="./Scripts/app.js" defer></script>
+    <link rel="stylesheet" href="Styles/app.css" />
+    <script src="./Scripts/app.js" defer></script>
 </head>
 
 <body>
-  <div class="page-container">
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
-      <div id="username-heading">Stell0xF</div>
-
-      <div class="sidebar-body">
-        <div class="sb-section">
-          <div class="sb-label">Channels</div>
-
-          <ol class="contacts channels">
-            <li class="contact channel">GC 1</li>
-            <li class="contact channel">GC 2</li>
-            <li class="contact channel">GC 3</li>
-          </ol>
+        <div class="sb-header">
+            <div id="username-heading">Wayne</div>
         </div>
 
-        <div class="sb-section">
-          <div class="sb-label">People</div>
+        <div class="sidebar-body">
 
-          <ol class="contacts people">
-            <li class="contact person">Person 1</li>
-            <li class="contact person">Person 2</li>
-            <li class="contact person">Person 3</li>
-          </ol>
+            <div class="sb-section">
+                <hr class="sb-line">
+                <div class="sb-label">CHANNELS</div>
+
+                <div class="contacts">
+                    <div class="contact selected-cont"> <img src="./Res/icons/comment.svg" class="icon-img" alt="">
+                        <p>GC 1</p>
+                    </div>
+                    <div class="contact"> <img src="./Res/icons/comment.svg" class="icon-img" alt="">
+                        <p>GC 2</p>
+                    </div>
+                    <div class="contact"> <img src="./Res/icons/comment.svg" class="icon-img" alt="">
+                        <p>GC 3</p>
+                    </div>
+                </div>
+                <hr class="sb-line">
+            </div>
+
+            <div class="sb-section">
+                <hr class="sb-line">
+                <div class="sb-label">PEOPLE</div>
+
+                <ol class="contacts">
+                    <div class="contact"> <img src="./Res/icons/comment.svg" class="icon-img" alt="">
+                        <p> Person 1</p>
+                    </div>
+                    <div class="contact"> <img src="./Res/icons/comment.svg" class="icon-img" alt="">
+                        <p> Person 2</p>
+                    </div>
+                    <div class="contact"> <img src="./Res/icons/comment.svg" class="icon-img" alt="">
+                        <p> Person 3</p>
+                    </div>
+                </ol>
+                <hr class="sb-line">
+            </div>
         </div>
-      </div>
 
-      <div class="sb-footer">
-        <button id="logout-btn">Logout</button>
-        <button id="sb-collapse-btn" onclick="collapseSidebar()">&lt;</button>
-      </div>
+        <div class="sb-footer">
+            <div id="logout-btn">LOGOUT
+                <img src="./Res/icons/exit.svg" class="icon-img" alt="logout.svg">
+            </div>
+        </div>
     </div>
 
     <!-- Chat Area -->
     <div class="chat-area" id="chatarea">
 
-      <div class="chat-body">
-        <div class="chat-header">Group Chat</div>
+        <div class="chat-body">
+            <div class="chat-header">
+                <div class="gc-prof-container"><img src="./Res/Images/butterfly.png" class="gc-prof-image" alt="profile-picture"></div>
+                <div class="header-title"> GC1</div>
+            </div>
 
-        <ul class="messages" id="messages-container">
-          <li class="message outgoing-msg">m1</li>
-          <li class="message outgoing-msg">m4</li>
-          <li class="message incoming-msg">m5</li>
-          <li class="message outgoing-msg">m1</li>
-          <li class="message outgoing-msg">m4</li>
-          <li class="message incoming-msg">m5</li>
-          <li class="message outgoing-msg">m1</li>
-          <li class="message outgoing-msg">m4</li>
-          <li class="message incoming-msg">m5</li>
-          <li class="message incoming-msg">m5</li>
-          <li class="message outgoing-msg">m4</li>
-          <li class="message incoming-msg">m5</li>
-          <li class="message outgoing-msg">m1</li>
-          <li class="message outgoing-msg">m2</li>
-          <li class="message incoming-msg">m5</li>
-        </ul>
-      </div>
-  
-      <form onsubmit="sendMsg(); return false;" class="sender-bar">
-        <!-- <input
+            <div class="messages" id="messages-container">
+            <!--    
+                <div class="message outgoing-msg">
+                    <div class="msg-sender"></div>
+                    <div class="msg-content">m1</div>
+                    <div class="msg-time">22:30</div>
+                </div>
+            -->
+            </div>
+        </div>
+
+        <div class="sender-bar">
+            <!-- <input
               type=""
               name="sender-field"
               id="sender-field"
               placeholder="Message"
             /> -->
 
-        <input type="text" name="sender-field" id="sender-field" placeholder="Message" required>
-        <input type="submit" id="sender-btn" name="sender-btn" value="Send" />
+            <input type="text" name="sender-field" id="sender-field" placeholder="Message" required>
+            <div id="sender-btn" onclick="sendMsg()"> <img src="./Res/icons/paper-plane.svg" class="icon-img"
+                    alt="send-icon.svg"> </div>
 
-      </form>
+        </div>
     </div>
-
-
-  </div>
 </body>
 
 </html>

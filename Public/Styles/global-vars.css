@@ -1,12 +1,30 @@
 :root {
+	--username-fsize: 1.8rem;
 
-	--sidebar-bg-color: #181818;
+	--fg-color: #eee;
+	--fg2-color: #aaa;
 
-	--header-bg-color: #202025;
-	--header-fg-color: #eee;
+	--bg-color: #181818;
+	--bg2-color: #404040;
 
-	--chatarea-bg-color: rgb(0, 204, 180);
+	--reject-color: rgb(120, 22, 31);
 
-	--username-fsize: 2rem;
+	--sidebar-fg-color:var(--fg-color);
+	--sidebar-fg2-color:var(--fg2-color);
+
+	--sidebar-bg-color:var(--bg-color);
+	--sidebar-bg2-color:var(--bg2-color);
+
+	--sb-label-size: .9rem;
+
+	--header-fg-color: var(--fg-color);
+	--header-b1-color: black;
+	--header-b2-color: #1818182a;
+
+	--chatarea-bg-color: var(--bg2-color);
+
 	--message-fsize: 1rem;
+	--msg-fg-color:white;
+	--msg-bg-color-incoming: #333333;
+	--msg-bg-color-outgoing: #1831b0;
 }

@@ -4,15 +4,19 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  /* outline: 0; */
+  outline: none;
 }
 
-
-.page-container {
+body {
   display: flex;
   flex-direction: rows;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+
   min-height: 100vh;
 }
+
 
 .sidebar {
   display: flex;
@@ -20,67 +24,119 @@
   justify-content: space-between;
 
   min-width: 12rem;
-  width: 20vw;
+  width: 20%;
   height: 100vh;
 
   color: var(--header-fg-color);
   background-color: var(--sidebar-bg-color);
 }
 
+.sb-header {
+  display: flex;
+  align-items: center;
+
+  height: 12%;
+  background-image: url("../Res/Images/pawel-czerwinski-RmhsidgK4JU-unsplash.jpg");
+  background-size: 100% 100%;
+}
+
 #username-heading {
-  height: 10%;
+  padding: 10px;
   font-size: var(--username-fsize);
-  text-decoration: underline;
   font-weight: bold;
+  font-style: italic;
+
+  width: 100%;
+  height: 100%;
 }
 
 .sidebar-body {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+
   height: 90%;
-  background: #000;
+  color: var(--sidebar-fg-color);
 }
 
 .sb-section {
   margin: 20px 0;
-  padding: 10px 8px;
-  background-color: rgb(0, 40, 121);
+  padding: 0px 8px;
+}
+
+.sb-line {
+  height: 1px;
+  width: 100%;
+  background-color: var(--sidebar-fg2-color);
 }
 
 .sb-label {
-  margin-bottom: 5px;
+  color: var(--sidebar-fg2-color);
+  margin: 5px 0;
+  font-size: var(--sb-label-size);
 }
 
 .contacts {
-  list-style-type: none;
-  background-color: maroon;
-  padding-left: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 
 .contact {
-  margin: 10px 0px;
-  background-color: rgb(235, 10, 89);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border-radius: 8px;
+  padding: 5px;
 }
+
+.contact:hover {
+  cursor: pointer;
+  background-color: var(--sidebar-bg2-color);
+}
+
+.contacts .selected-cont {
+  background-color: var(--sidebar-bg2-color);
+}
+
+.icon-img {
+  filter: invert(1);
+  width: 1.2rem;
+}
+
+.contact p {
+  margin: 0;
+}
+
 
 /* Footer */
 .sb-footer {
-  padding: 10px 4px;
   display: flex;
   flex-direction: row;
+  justify-content: space-around;
 
-  justify-content: space-evenly;
-  background-color: yellow;
+  padding: 10px 4px;
   height: 10%;
 }
 
 #logout-btn {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
   width: 80%;
+
+  font-weight: bold;
+  font-size: 1.2rem;
+  background-color: var(--reject-color);
+  border-radius: 10px;
 }
 
-#sb-collapse-btn {
-  width: 10%;
+#logout-btn:hover {
+  cursor: pointer;
 }
+
+
 
 /* ------- Chat AREA ------- */
 .chat-area {
@@ -88,7 +144,7 @@
   flex-direction: column;
   justify-content: space-between;
 
-  width: 100%;
+  width: 80%;
   height: 100vh;
 
   padding: 10px;
@@ -97,40 +153,105 @@
 
 .chat-body {
   height: 88vh;
+  border-radius: 10px;
+  
+  /* background-image: url("../Res/Images/nguyen-khiem-mkw6T2_1QMc-unsplash.jpg"); */
+  /* background-image: url("../Res/Images/eugene-golovesov-CiQrtBeJEhs-unsplash.jpg"); */
+  background-image: url("../Res/Images/batman2.jpg");
+  background-size: cover;
+  background-position: center center;
 }
 
 /* Chat Header */
 .chat-header {
-  height: 8%;
-  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  padding: 8px;
+
+  height: 10%;
 
   color: var(--header-fg-color);
-  background-color: var(--header-bg-color);
+  border-radius: 10px 10px 0 0;
+
+  background: linear-gradient(var(--header-b1-color), var(--header-b2-color));
+  backdrop-filter: blur(4px);
+  border-bottom: 1px solid var(--fg2-color);
+}
+
+.chat-header .gc-prof-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+}
+
+.chat-header .gc-prof-image {
+  height: 100%;
+  border-radius: 10px;
+  box-shadow: 0 0 5px 2px rgba(255, 0, 0, 0.608);
+}
+
+.chat-header .header-title {
+  /* text-align: center; */
+  width: 100%;
+  padding: 10px;
+  font-size: 1.5rem;
 }
 
 /* Messages */
 .messages {
   display: flex;
   flex-direction: column;
-  height: 92%;
+  height: 90%;
   overflow-y: auto;
 
   padding: 5px;
-  background: linear-gradient(to bottom, cyan, tomato);
+
+  border-radius: 0 0 10px 10px;
   list-style-type: none;
 }
 
 .message {
-  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+
+  margin: 8px;
+  padding: 8px 4px;
   width: fit-content;
+  max-width: 80%;
+
+  color: var(--msg-fg-color);
+  border-radius: 10px;
+backdrop-filter: blur(4px);  
 }
 
-.outgoing-msg {
-  background-color: darkred;
+.msg-sender {
+  color: var(--fg2-color);
+  font-size: 0.8rem;
+  font-weight: bold;
+  font-style: italic;
+}
+
+.msg-content {
+  font-size: var(--message-fsize);
+  margin: 2px 10px;
+}
+
+.msg-time {
+  margin-top: 4px;
+  text-align: right;
+  font-size: 0.7rem;
+  font-style: italic;
 }
 
 .incoming-msg {
-  background-color: green;
+  background-color: var(--msg-bg-color-incoming);
+}
+
+.outgoing-msg {
+  background-color: var(--msg-bg-color-outgoing);
   margin-left: auto;
 }
 
@@ -141,20 +262,39 @@
   flex-direction: row;
   align-items: center;
 
-  padding: 5px;
-  height: 8vh;
+  padding: 10px;
+  min-height: 8vh;
 
   justify-content: space-around;
-  background-color: orangered;
+
+  border-radius: 8px;
+  background-color: var(--bg-color);
 }
 
 #sender-field {
   padding: 5px;
   width: 82%;
   height: 100%;
+  border-radius: 10px;
+  border: 2px solid var(--fg2-color);
+  color: var(--fg-color);
+  background: none;
 }
 
 #sender-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
+
   height: 100%;
   width: 15%;
+}
+
+#sender-btn:hover {
+  cursor: pointer;
+}
+
+#sender-btn img {
+  width: 1.5rem;
 }
