@@ -2,8 +2,26 @@ var msgContainer = document.getElementById("messages-container");
 var senderField = document.getElementById('sender-field');
 var sidebar = document.getElementById('sidebar');
 var chatarea = document.getElementById('chatarea');
+var sbToggle = document.getElementById('sb-toggle');
 
 var dateObj = new Date();
+
+
+function toggleSidebar() {
+	let view = sidebar.dataset.expanded;
+
+	if (view == "true") {
+		sidebar.dataset.expanded = "false";
+		// sbToggle.innerHTML = "<img src='./Res/icons/menu-burger.svg' class='icon-img' id='sb-toggle-img'>";
+		sbToggle.style.backgroundImage = "url(./Res/icons/menu-burger.svg)";
+	}
+
+	else {
+		sidebar.dataset.expanded = "true";
+		// sbToggle.innerHTML = "<img src='./Res/icons/cross.svg' class='icon-img' id='sb-toggle-img'>";
+		sbToggle.style.backgroundImage = "url(./Res/icons/angle-up.svg)";
+	}
+}
 
 
 function scrollMsgsToBottom() {
@@ -101,17 +119,6 @@ function addRandomMessages(count) {
 		msgContainer.appendChild(newMsg);
 	}
 	scrollMsgsToBottom();
-}
-
-function sidebarCollapser(expand) {
-	if (expand) {
-		sidebar.classList.add('sb-mobile');
-		sidebar.classList.remove('sidebar');
-	}
-	else {
-		sidebar.classList.add('sidebar');
-		sidebar.classList.remove('sb-mobile');
-	}
 }
 
 scrollMsgsToBottom();

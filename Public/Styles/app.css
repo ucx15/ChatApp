@@ -47,22 +47,44 @@ body {
   flex-direction: column;
   justify-content: space-between;
 
-  min-width: 12rem;
   width: 20%;
+  min-width: 14rem;
   height: 100vh;
-
   color: var(--fg-color);
   background-color: var(--bg2-color);
+
+  border-right: 1px solid var(--fg3-color);
+  z-index: 2;
 }
 
 .sb-header {
   display: flex;
-  align-items: center;
-  flex-direction: row;
 
-  height: 6rem;
+  min-height: 6rem;
   background-image: url("../Res/Images/pawel-czerwinski-RmhsidgK4JU-unsplash.jpg");
   background-size: 100% 100%;
+}
+
+
+.sb-toggle {
+  display: none;
+
+  position: absolute;
+  top: 1.2rem;
+  right: .4rem;
+
+  width: 1.6rem;
+  height: 1.6rem;
+
+  z-index: 10;
+
+  background-image: url("../Res/icons/angle-up.svg");
+  filter: invert(1);
+  background-size: contain;
+}
+
+.sb-toggle:hover {
+  cursor: pointer;
 }
 
 #username-heading {
@@ -70,22 +92,20 @@ body {
   font-size: var(--username-fsize);
   font-weight: bold;
   font-style: italic;
-
   width: 100%;
   height: 100%;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0), rgb(0, 0, 0));
 }
 
 .sidebar-body {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
-
-  height: 90%;
+  height: 100%;
 }
 
 .sb-section {
-  margin: 20px 0;
-  padding: 2px 8px;
+  margin-top: 2rem;
+  padding: 2px 4px;
 }
 
 .sb-line {
@@ -105,6 +125,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+  margin: 0 .5rem;
 }
 
 .contact {
@@ -112,13 +133,20 @@ body {
   flex-direction: row;
   justify-content: space-between;
   border-radius: 8px;
-  padding: 5px;
+
+  margin: .1rem 0;
+  padding: .5rem;
 }
 
 .contact:hover {
   cursor: pointer;
   background-color: var(--bg2-color);
 }
+
+.contact:active {
+  background-color: var(--reject-color);
+}
+
 
 .contacts .selected-cont {
   background-color: var(--bg3-color);
@@ -141,7 +169,7 @@ body {
   justify-content: space-around;
 
   padding: 10px 4px;
-  height: 4rem;
+  min-height: 4rem;
 }
 
 #logout-btn {
@@ -154,16 +182,12 @@ body {
   font-weight: bold;
   font-size: 1.2rem;
   background-color: var(--reject-color);
-  border-radius: 10px;
-  transition: .1s;
+  border-radius: 8px;
 }
 
 #logout-btn:hover {
   cursor: pointer;
-  background-color: var(--reject2-color);
-  transition: .05s;
 }
-
 
 
 /* ------- Chat AREA ------- */
@@ -172,7 +196,7 @@ body {
   flex-direction: column;
   justify-content: space-between;
 
-  width: 80%;
+  width: 100%;
   height: 100%;
 }
 
@@ -189,7 +213,6 @@ body {
 /* Chat Header */
 .chat-header {
   display: flex;
-  flex-direction: row;
   align-items: center;
 
   height: 4rem;
@@ -200,26 +223,17 @@ body {
   border-bottom: 1px solid var(--fg2-color);
 }
 
-.sb-collapser {
-  display: none;
-}
-
-.sb-collapser:hover {
-  cursor: pointer;
-}
-
 .chat-header .prof-image {
   margin: 0 6px;
   height: 90%;
-  border-radius: 10px;
+  border-radius: 6px;
 }
 
 .chat-header .header-title {
-  /* text-align: center; */
-  width: 100%;
   padding: 10px;
   font-size: 1.5rem;
 }
+
 
 /* Messages */
 .messages {
@@ -278,26 +292,26 @@ body {
 /* Sender Bar */
 
 .sender-bar {
+  z-index: 1;
   display: flex;
   flex-direction: row;
+
   align-items: center;
-
-  padding: 10px;
-  min-height: 8vh;
-
   justify-content: space-around;
-
+  min-height: 8vh;
   background-color: var(--bg-color);
 }
 
 #sender-field {
   padding: 5px;
   width: 82%;
-  height: 100%;
-  border-radius: 10px;
-  border: 2px solid var(--fg3-color);
+  height: 3rem;
+
   color: var(--fg-color);
   background: none;
+
+  border: 2px solid var(--fg3-color);
+  border-radius: 10px;
 }
 
 #sender-btn {
@@ -324,58 +338,40 @@ body {
 }
 
 
-
 /* Media Queries */
 
-@media screen and (max-width: 768px) {
-
-  body {
-    flex-direction: column;
+@media (max-width: 768px) {
+  .sb-toggle {
+    display: block;
   }
 
-  .sb-collapser {    
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
-    background-color: #181818a3;
-    backdrop-filter: blur(4px);
-    font-weight: bolder;
-    font-size: 1.5rem;
-  
-    height: 100%;
-    width: 2rem;
-  }
-
-  /* Sidebar */
   .sidebar {
-    display: none;
-    width: 100%;
-    height: 100%;
-  }
-
-  .sidebar-header {
-    min-height: 2rem;
-    height: 2rem;
-  }
-
-  .sb-mobile {
     position: absolute;
-    width: 20rem;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background-color: var(--bg-color);
-    color: var(--fg-color);
     width: 100%;
-    z-index: 1;
+
+    background-color: #121218cd;
+    backdrop-filter: blur(4px);
+
+    transition: .08s ease-in-out;
   }
 
-  /* Chat Area */
-  .chat-area {
-    width: 100%;
-    height: 100%;
+  .sidebar[data-expanded="false"] {
+    transform: translateY(-100%);
+    transition: .1s ease-in-out;
   }
 
+  #username-heading {
+    /* text-align: center; */
+    font-size: 2.4rem;
+    padding: 1.4rem;
+  }
+
+  .contacts {
+    margin: 0 2rem;
+  }
+
+  .contact {
+    margin: .2rem 0;
+    padding: .8rem;
+  }
 }
