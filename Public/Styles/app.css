@@ -13,10 +13,9 @@
   --reject2-color: hsl(348, 70%, 20%);
 
   --sb-label-size: .9rem;
+  --sb-bg-mobile: #121218b0;
 
   --header-bg-color: #0a0a0a;
-
-  --chatarea-bg-color: var(--bg2-color);
 
   --message-fsize: 1rem;
   --msg-fg-color: white;
@@ -42,6 +41,27 @@ body {
 }
 
 
+.icon-img {
+  filter: invert(1);
+  width: 1.2rem;
+
+  pointer-events: none;
+}
+
+.sb-toggle {
+  display: none;
+  position: absolute;
+  top: 1.2rem;
+  right: .4rem;
+
+  width: 1.6rem;
+  height: 1.6rem;
+
+  z-index: 10;
+  cursor: pointer;
+}
+
+
 .sidebar {
   display: flex;
   flex-direction: column;
@@ -63,28 +83,6 @@ body {
   min-height: 6rem;
   background-image: url("../Res/Images/pawel-czerwinski-RmhsidgK4JU-unsplash.jpg");
   background-size: 100% 100%;
-}
-
-
-.sb-toggle {
-  display: none;
-
-  position: absolute;
-  top: 1.2rem;
-  right: .4rem;
-
-  width: 1.6rem;
-  height: 1.6rem;
-
-  z-index: 10;
-
-  background-image: url("../Res/icons/angle-up.svg");
-  filter: invert(1);
-  background-size: contain;
-}
-
-.sb-toggle:hover {
-  cursor: pointer;
 }
 
 #username-heading {
@@ -152,10 +150,6 @@ body {
   background-color: var(--bg3-color);
 }
 
-.icon-img {
-  filter: invert(1);
-  width: 1.2rem;
-}
 
 .contact p {
   margin: 0;
@@ -207,7 +201,7 @@ body {
   /* background-image: url("../Res/Images/batman2_1600px.jpg"); */
   background-size: cover;
   background-position: center center;
-  background-color: var(--chatarea-bg-color);
+  background-color: var(--bg2-color);
 }
 
 /* Chat Header */
@@ -257,8 +251,7 @@ body {
   max-width: 80%;
 
   color: var(--fg-color);
-  border-radius: 10px;
-  backdrop-filter: blur(4px);
+  border-radius: 8px;
 }
 
 .msg-sender {
@@ -349,15 +342,15 @@ body {
     position: absolute;
     width: 100%;
 
-    background-color: #121218cd;
+    background-color: var(--sb-bg-mobile);
     backdrop-filter: blur(4px);
-
-    transition: .08s ease-in-out;
   }
 
+  .sidebar[data-expanded="true"] {
+    display: flex;
+  }
   .sidebar[data-expanded="false"] {
-    transform: translateY(-100%);
-    transition: .1s ease-in-out;
+    display: none;
   }
 
   #username-heading {

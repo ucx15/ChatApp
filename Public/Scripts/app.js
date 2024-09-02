@@ -2,24 +2,24 @@ var msgContainer = document.getElementById("messages-container");
 var senderField = document.getElementById('sender-field');
 var sidebar = document.getElementById('sidebar');
 var chatarea = document.getElementById('chatarea');
-var sbToggle = document.getElementById('sb-toggle');
+var sbToggleImg = document.getElementById('sb-toggle-img');
+
+var burgerIconPath = "./Res/icons/menu-burger.svg";
+var crossIconPath = "./Res/icons/cross.svg";
 
 var dateObj = new Date();
-
 
 function toggleSidebar() {
 	let view = sidebar.dataset.expanded;
 
 	if (view == "true") {
 		sidebar.dataset.expanded = "false";
-		// sbToggle.innerHTML = "<img src='./Res/icons/menu-burger.svg' class='icon-img' id='sb-toggle-img'>";
-		sbToggle.style.backgroundImage = "url(./Res/icons/menu-burger.svg)";
+		sbToggleImg.src = burgerIconPath;
 	}
 
 	else {
 		sidebar.dataset.expanded = "true";
-		// sbToggle.innerHTML = "<img src='./Res/icons/cross.svg' class='icon-img' id='sb-toggle-img'>";
-		sbToggle.style.backgroundImage = "url(./Res/icons/angle-up.svg)";
+		sbToggleImg.src = crossIconPath;
 	}
 }
 
@@ -91,7 +91,7 @@ function addRandomMessages(count) {
 	let time =getCurrentTime();
 
 	for (let i = 0; i < count; i++) {
-		let newMsg = document.createElement('li');
+		let newMsg = document.createElement('div');
 
 		let msgSender = document.createElement('div');
 		let msgContent = document.createElement('div');
