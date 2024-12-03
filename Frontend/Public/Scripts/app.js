@@ -1,13 +1,42 @@
-var msgContainer = document.getElementById("messages-container");
-var senderField = document.getElementById('sender-field');
+class Message {
+	constructor(sender, content, timestamp) {
+		this.sender = sender;
+		this.content = content;
+		this.timestamp = timestamp;
+	}
+
+	toJSON() {
+		return {
+			sender: this.sender,
+			content: this.content,
+			timestamp: this.timestamp
+		};
+	}
+
+	toJSONString() {
+		return JSON.stringify(this.toJSON());
+	}
+}
+
+
+// Global variables
+let CLIENT_ID = null;  // fetched from the server
+const BACKEND_URL = "http://localhost:5000";
+// const SOCKET = new WebSocket(`ws://${BACKEND_URL}`);
+
+
+// HTML elements
+const divMsgs = document.getElementById("messages-container");
+
+const buttonSend = document.getElementById('sender-btn');
+const inputText = document.getElementById('sender-field');
+
 var sidebar = document.getElementById('sidebar');
 var chatarea = document.getElementById('chatarea');
 var sbToggleImg = document.getElementById('sb-toggle-img');
 
 var burgerIconPath = "./Res/icons/menu-burger.svg";
 var crossIconPath = "./Res/icons/cross.svg";
-
-var dateObj = new Date();
 
 function toggleSidebar() {
 	let view = sidebar.dataset.expanded;
@@ -23,103 +52,72 @@ function toggleSidebar() {
 	}
 }
 
-
 function scrollMsgsToBottom() {
-	msgContainer.scrollTop = msgContainer.scrollHeight;
+	divMsgs.scrollTop = divMsgs.scrollHeight;
 }
 
-function getCurrentTime() {
-	return dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-}
-
-function sendMsg() {
-	let msgContent = senderField.value;
+// Message Functions
+function addMsgtoChat(msg) {
+	const msgContent = msg.content;
 
 	if (!msgContent) {
 		return;
 	}
 
-	let newMsg = document.createElement('li');
+	// HTML elements
+	let divContainer = document.createElement('div');
+	let divSender = document.createElement('div');
+	let divContent = document.createElement('div');
+	let divTime = document.createElement('div');
 
-	let msgSenderDiv = document.createElement('div');
-	let msgContentDiv = document.createElement('div');
-	let msgTimeDiv = document.createElement('div');
+	// Set the content of the elements
+	divSender.innerHTML = msg.sender;
+	divContent.innerHTML = msg.content;
+	divTime.innerHTML = new Date(msg.timestamp).toLocaleTimeString();
 
-	let currentTimestamp = getCurrentTime();
+	// Add classes to the elements
+	divContainer.classList.add('message');
+	divContainer.classList.add('outgoing-msg');
 
-	msgContentDiv.innerHTML = msgContent;
-	msgTimeDiv.innerHTML = currentTimestamp
+	divSender.classList.add('msg-sender');
+	divContent.classList.add('msg-content');
+	divTime.classList.add('msg-time');
 
-	newMsg.classList.add('message');
-	newMsg.classList.add('outgoing-msg');
+	// Append the elements to the message container
+	divContainer.appendChild(divSender);
+	divContainer.appendChild(divContent);
+	divContainer.appendChild(divTime);
 
-	msgSenderDiv.classList.add('msg-sender');
-	msgContentDiv.classList.add('msg-content');
-	msgTimeDiv.classList.add('msg-time');
-
-	newMsg.appendChild(msgSenderDiv);
-	newMsg.appendChild(msgContentDiv);
-	newMsg.appendChild(msgTimeDiv);
-
-
-	msgContainer.appendChild(newMsg);
+	divMsgs.appendChild(divContainer);
 	scrollMsgsToBottom();
-	senderField.value = "";
+	inputText.value = "";
+}
+function sendMsgtoServer(msg) {
+	console.log("EVENT: Sending message");
+	console.log(msg);
+
+	// TODO: Send message to the server using the WebSocket
+	// SOCKET.send(msg.toJSONString());
+}
+function sendMsg() {
+	// construct the message object
+	const text = inputText.value.trim();
+	if (!text) return null
+
+	const msg = new Message(
+		CLIENT_ID,
+		text,
+		Date.now());
+
+	// process the message
+	addMsgtoChat(msg)
+	sendMsgtoServer(msg);
 }
 
 
-// Test function to add random messages
-function addRandomMessages(count) {
-	let messages = [
-		'Hello, how are you?',
-		'I am fine, thank you.',
-		'What are you doing?',
-		'Nothing much, just chilling.',
-		'How is the weather today?',
-		'It is very hot today.',
-		'What are you doing tomorrow?',
-		'I have a meeting tomorrow.',
-		'What about you?',
-		'I am going to the beach tomorrow.',
-		'Nice, have fun!',
-		'Thanks!',
-		'Goodbye!',
-		'Goodbye!',
-	];
+// <------ Event Listeners ------>
+inputText.addEventListener('keyup', function (event) {
+	if (event.key === "Enter") sendMsg()
+});
 
-	let sender = "Alfred";
-	let time =getCurrentTime();
-
-	for (let i = 0; i < count; i++) {
-		let newMsg = document.createElement('div');
-
-		let msgSender = document.createElement('div');
-		let msgContent = document.createElement('div');
-		let msgTime = document.createElement('div');
-
-		newMsg.classList.add('message');
-		if (i % 2 == 0) {
-			newMsg.classList.add('outgoing-msg');
-		} else {
-			newMsg.classList.add('incoming-msg');
-			msgSender.innerHTML = sender;
-		}
-
-		msgContent.innerHTML = messages[i];
-		msgTime.innerHTML = time;
-
-		msgSender.classList.add('msg-sender');
-		msgContent.classList.add('msg-content');
-		msgTime.classList.add('msg-time');
-
-		newMsg.appendChild(msgSender);
-		newMsg.appendChild(msgContent);
-		newMsg.appendChild(msgTime);
-
-		msgContainer.appendChild(newMsg);
-	}
-	scrollMsgsToBottom();
-}
-
-scrollMsgsToBottom();
-addRandomMessages(10);
+buttonSend.addEventListener('click', sendMsg);
