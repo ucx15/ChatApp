@@ -5,6 +5,10 @@ class Message {
 		this.timestamp = timestamp;
 	}
 
+	static fromJSON(obj) {
+		return new Message(obj.sender, obj.content, obj.timestamp);
+	}
+
 	toJSON() {
 		return {
 			sender: this.sender,
@@ -21,8 +25,9 @@ class Message {
 
 // Global variables
 let CLIENT_ID = null;  // fetched from the server
-const BACKEND_URL = "http://localhost:5000";
-// const SOCKET = new WebSocket(`ws://${BACKEND_URL}`);
+const BACKEND_URL = "localhost";
+const BACKEND_PORT = 5000;
+const SOCKET = new WebSocket(`ws://${BACKEND_URL}:${BACKEND_PORT}`);
 
 
 // HTML elements
@@ -94,10 +99,9 @@ function addMsgtoChat(msg) {
 }
 function sendMsgtoServer(msg) {
 	console.log("EVENT: Sending message");
-	console.log(msg);
 
 	// TODO: Send message to the server using the WebSocket
-	// SOCKET.send(msg.toJSONString());
+	SOCKET.send(msg.toJSONString());
 }
 function sendMsg() {
 	// construct the message object
@@ -116,8 +120,16 @@ function sendMsg() {
 
 
 // <------ Event Listeners ------>
-inputText.addEventListener('keyup', function (event) {
-	if (event.key === "Enter") sendMsg()
+SOCKET.addEventListener("open", (ev) => {
+
+	inputText.addEventListener('keyup', function (event) {
+		if (event.key === "Enter") sendMsg()
+	});
+
+	buttonSend.addEventListener('click', sendMsg);
 });
 
-buttonSend.addEventListener('click', sendMsg);
+SOCKET.addEventListener("message", (ev) => {
+	console.log("EVENT: Message received");
+	addMsgtoChat(Message.fromJSON(JSON.parse(ev.data)));
+});
