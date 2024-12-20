@@ -25,8 +25,7 @@ class Message {
 
 // Global variables
 let CLIENT_ID = null;  // fetched from the server
-// const BACKEND_URL = "localhost";
-const BACKEND_URL = "192.168.0.112";
+const BACKEND_URL = window.location.hostname || "localhost";
 const BACKEND_PORT = 5000;
 const SOCKET = new WebSocket(`ws://${BACKEND_URL}:${BACKEND_PORT}`);
 
