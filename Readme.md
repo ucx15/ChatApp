@@ -8,6 +8,7 @@ Simple chatting app using WebSockets, Node.js on backend and Vanilla JS, WebSock
   - express
   - nodemon
   - ws
+  - uuid
 
 ## Quick Start
 

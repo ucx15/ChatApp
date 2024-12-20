@@ -82,7 +82,12 @@ function addMsgtoChat(msg) {
 
 	// Add classes to the elements
 	divContainer.classList.add('message');
-	divContainer.classList.add('outgoing-msg');
+	if (msg.sender === CLIENT_ID) {
+		divContainer.classList.add('outgoing-msg');
+	}
+	else {
+		divContainer.classList.add('incoming-msg');
+	}
 
 	divSender.classList.add('msg-sender');
 	divContent.classList.add('msg-content');
@@ -131,5 +136,20 @@ SOCKET.addEventListener("open", (ev) => {
 
 SOCKET.addEventListener("message", (ev) => {
 	console.log("EVENT: Message received");
-	addMsgtoChat(Message.fromJSON(JSON.parse(ev.data)));
+	const data = JSON.parse(ev.data);
+	console.log(data);
+
+	switch (data.type) {
+
+		case 'hello':
+			CLIENT_ID = data.id;
+			break;
+
+		case 'message':
+			addMsgtoChat(Message.fromJSON(data));
+			break;
+
+		default:
+			console.warn(`Unknown message type ${data.type}`);
+	}
 });
