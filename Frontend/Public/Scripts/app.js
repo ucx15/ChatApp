@@ -25,7 +25,8 @@ class Message {
 
 // Global variables
 let CLIENT_ID = null;  // fetched from the server
-const BACKEND_URL = "localhost";
+// const BACKEND_URL = "localhost";
+const BACKEND_URL = "192.168.0.112";
 const BACKEND_PORT = 5000;
 const SOCKET = new WebSocket(`ws://${BACKEND_URL}:${BACKEND_PORT}`);
 
@@ -121,10 +122,21 @@ function sendMsg() {
 	// process the message
 	addMsgtoChat(msg)
 	sendMsgtoServer(msg);
+	inputText.focus();
 }
 
 
 // <------ Event Listeners ------>
+
+// UI
+document.addEventListener('keydown', (event) => {
+	// Automatically focus on the text input when typing starts
+	if (document.activeElement !== inputText && event.key.length === 1) {
+		inputText.focus();
+	}
+});
+
+// Network
 SOCKET.addEventListener("open", (ev) => {
 
 	inputText.addEventListener('keyup', function (event) {
