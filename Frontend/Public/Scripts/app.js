@@ -164,3 +164,15 @@ SOCKET.addEventListener("message", (ev) => {
 			console.warn(`Unknown message type ${data.type}`);
 	}
 });
+
+SOCKET.addEventListener("error", (ev) => {
+    // TODO: Display error message in GUI and make it unsable 💀
+	console.error("WebSocket error:", ev);
+
+});
+
+SOCKET.addEventListener("close", (ev) => {
+    // TODO: Display connection closed error in GUI 😊
+    console.log("WebSocket connection closed:", ev);
+    alert("Connection to the chat server has been closed. Please refresh the page to reconnect.");
+});

@@ -1,7 +1,7 @@
 const WebSocket = require('ws');
 const dotenv = require('dotenv');
 const { v4: uuidv4 } = require('uuid');
-const sqlite = require('sqlite3');
+const sqlite = require('sqlite3').verbose();
 
 
 dotenv.config({ path: '.env.local' });
@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 5000;
 const DATABASE = process.env.DATABASE || 'test.db';
 
 
-const clients = [];
+let clients = [];
 const db = new sqlite.Database(DATABASE);
 
 
@@ -20,10 +20,10 @@ function generateTables() {
 		uuid TEXT NOT NULL,
 
 		sender TEXT NOT NULL,
-		reciever TEXT NOT NULL,
-		data TEXT,
-		timestamp TEXT NOT NULL
-	)`;
+		receiver TEXT NOT NULL,
+		content TEXT,
+		timestamp INTEGER NOT NULL
+	);`;
 
 	db.run(query, (err) => {
 		if (err) {
@@ -36,16 +36,32 @@ function generateTables() {
 generateTables();
 
 
-function insertMessage(msg, reciever) {
-	const query = `INSERT INTO messages ( uuid, sender, reciever, data, timestamp) VALUES ( ?, ?, ?, ?, ? )`;
+function fetchMessagesfromDB(callback) {
+	const query = `select * from messages;`;
+
+	db.all(query, (err, rows) => {
+		if (err) {
+			console.error(`Error fetching messages ${err}`);
+			return callback([])
+		}
+
+		else {
+			console.log("FETCHED all messages");
+			return callback(rows);
+		}
+	});
+
+}
+
+function addMessagetoDB(msg, receiver) {
+	const query = `INSERT INTO messages ( uuid, sender, receiver, content, timestamp) VALUES ( ?, ?, ?, ?, ? )`;
 
 	const msg_uuid = uuidv4();
 	console.log(msg);
-	console.log(query);
 
-	db.run(query, msg_uuid, msg.sender, reciever, msg.content, msg.timestamp, (err) => {
+	db.run(query, msg_uuid, msg.sender, receiver, msg.content, msg.timestamp, (err) => {
 		if (err) {
-			console.log(`Error inserting message {msg}`);
+			console.log(`Error inserting message ${msg}`);
 			console.error(err);
 		}
 		else {
@@ -55,27 +71,53 @@ function insertMessage(msg, reciever) {
 
 }
 
+function _constructMessage(data) {
+	return {
+		sender    : data.sender,
+		content   : data.content,
+		timestamp : data.timestamp
+	}
+}
+
 
 const wss = new WebSocket.Server({ port: PORT });
 
 wss.on('connection', (ws) => {
 
-	// TODO: Replace it with persistent storage
+	// TODO: Send saved messages to client
 
 	// Generate and send a unique client ID to Client
 	const clientId = uuidv4();
-	clients.push({id: clientId, ws});
+	clients.push({ id: clientId, ws });
 
-	ws.send(JSON.stringify({type: 'hello', id: clientId}));
+	ws.send(JSON.stringify({ type: 'hello', id: clientId }));
 	console.log(`Client connected: ${clientId}`);
 
+	fetchMessagesfromDB( (msgs) => {
+		if (msgs) {
+			msgs.forEach( (msg) => {
+				msg = _constructMessage(msg);
+				msg.type = "message";
+				let msgString = JSON.stringify(msg);
+
+				clients.forEach((client) => {
+					client = client.ws;
+					if ((client.readyState === WebSocket.OPEN)) {
+						client.send(msgString);
+					}
+				});
+
+			})
+		}
+
+	});
 
 	// Code to handle incoming messages
 	ws.on('message', (data) => {
 		data = JSON.parse(data)
 		data.type = 'message';
 
-		insertMessage(data, "any");
+		addMessagetoDB(data, "any");
 
 		// Broadcast the message to all clients
 		clients.forEach((client) => {
@@ -89,7 +131,12 @@ wss.on('connection', (ws) => {
 
 	ws.on('close', () => {
 		console.log(`Client disconnected: ${clientId}`);
+		clients = clients.filter(client => client.id !== clientId);
 	});
+
+    ws.on('error', (error) => {
+        console.error(`WebSocket error for client ${clientId}:`, error);
+    });
 });
 
 console.log(`WebSocket server is running on ws://localhost:${PORT}`);
