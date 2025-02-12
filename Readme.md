@@ -41,3 +41,5 @@ The Backend should be running on [http://localhost:5000](http://localhost:5000).
 ![Img1](Showcase/img1.png)
 
 [ucx15 @ GitHub](https://github.com/ucx15)
+
+[Mail Me](mailto:inboxofuc@gmail.com)
