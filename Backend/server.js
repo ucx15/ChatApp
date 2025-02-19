@@ -1,11 +1,23 @@
+const express = require('express');
+const http = require('http');
 const WebSocket = require('ws');
-const dotenv = require('dotenv');
-const { v4: uuidv4 } = require('uuid');
+
+// const mongoose = require('mongoose');
 const sqlite = require('sqlite3').verbose();
+const cors = require('cors');
+const dotenv = require('dotenv');
+
+const { v4: uuidv4 } = require('uuid');
+
+const apiRoutes = require("./Routes/apiRoutes");
+const defaultRoutes = require("./Routes/defaultRoutes");
+
 
 
 dotenv.config({ path: '.env.local' });
-const PORT = process.env.PORT || 5000;
+// dotenv.config({ path: '.env.production' });
+
+const PORT = process.env.PORT;
 const DATABASE = process.env.DATABASE || 'test.db';
 
 
@@ -73,14 +85,36 @@ function addMessagetoDB(msg, receiver) {
 
 function _constructMessage(data) {
 	return {
-		sender    : data.sender,
-		content   : data.content,
-		timestamp : data.timestamp
+		sender: data.sender,
+		content: data.content,
+		timestamp: data.timestamp
 	}
 }
 
 
-const wss = new WebSocket.Server({ port: PORT });
+// Express Setup
+const app = express();
+
+app.use(cors({ origin: '*', credentials: true }));
+app.use(express.json());
+
+
+// Routing
+app.use('/api', apiRoutes);
+app.use('/', defaultRoutes);
+
+
+// HTTP Server
+const server = http.createServer(app);
+
+server.listen(PORT, () => {
+	console.log(`HTTP Server @ http://localhost:${PORT}`);
+});
+
+
+// WebSocket Server
+const wss = new WebSocket.Server({ server });
+
 
 wss.on('connection', (ws) => {
 
@@ -93,9 +127,9 @@ wss.on('connection', (ws) => {
 	ws.send(JSON.stringify({ type: 'hello', id: clientId }));
 	console.log(`Client connected: ${clientId}`);
 
-	fetchMessagesfromDB( (msgs) => {
+	fetchMessagesfromDB((msgs) => {
 		if (msgs) {
-			msgs.forEach( (msg) => {
+			msgs.forEach((msg) => {
 				msg = _constructMessage(msg);
 				msg.type = "message";
 				let msgString = JSON.stringify(msg);
@@ -134,9 +168,9 @@ wss.on('connection', (ws) => {
 		clients = clients.filter(client => client.id !== clientId);
 	});
 
-    ws.on('error', (error) => {
-        console.error(`WebSocket error for client ${clientId}:`, error);
-    });
+	ws.on('error', (error) => {
+		console.error(`WebSocket error for client ${clientId}:`, error);
+	});
 });
 
-console.log(`WebSocket server is running on ws://localhost:${PORT}`);
+console.log(`WebSocket Server @ ws://localhost:${PORT}`);
