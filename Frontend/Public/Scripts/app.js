@@ -100,14 +100,15 @@ function addMsgtoChat(msg) {
 
 	divMsgs.appendChild(divContainer);
 	scrollMsgsToBottom();
-	inputText.value = "";
 }
+
 function sendMsgtoServer(msg) {
 	console.log("EVENT: Sending message");
 
 	// TODO: Send message to the server using the WebSocket
 	SOCKET.send(msg.toJSONString());
 }
+
 function sendMsg() {
 	// construct the message object
 	const text = inputText.value.trim();
@@ -122,6 +123,7 @@ function sendMsg() {
 	addMsgtoChat(msg)
 	sendMsgtoServer(msg);
 	inputText.focus();
+	inputText.value = "";
 }
 
 
@@ -135,14 +137,17 @@ document.addEventListener('keydown', (event) => {
 	}
 });
 
+
+inputText.addEventListener('keyup', function (event) {
+	if (event.key === "Enter") sendMsg()
+});
+
+buttonSend.addEventListener('click', sendMsg);
+
+
+
 // Network
 SOCKET.addEventListener("open", (ev) => {
-
-	inputText.addEventListener('keyup', function (event) {
-		if (event.key === "Enter") sendMsg()
-	});
-
-	buttonSend.addEventListener('click', sendMsg);
 });
 
 SOCKET.addEventListener("message", (ev) => {
@@ -166,13 +171,17 @@ SOCKET.addEventListener("message", (ev) => {
 });
 
 SOCKET.addEventListener("error", (ev) => {
-    // TODO: Display error message in GUI and make it unsable 💀
+    // TODO: Display error message in GUI and make it unusable 💀
 	console.error("WebSocket error:", ev);
 
 });
 
 SOCKET.addEventListener("close", (ev) => {
     // TODO: Display connection closed error in GUI 😊
+    // alert("Connection to the chat server has been closed. Please refresh the page to reconnect.");
     console.log("WebSocket connection closed:", ev);
-    alert("Connection to the chat server has been closed. Please refresh the page to reconnect.");
 });
+
+
+// TODO: Fetch user chats from the server
+// TODO: Message delivery status to be implemented
