@@ -16,7 +16,8 @@ const defaultRoutes = require("./Routes/defaultRoutes");
 // const roomController = require("./Controllers/roomController.js");
 
 
-dotenv.config({ path: '.env.local' });
+dotenv.config();
+// dotenv.config({ path: '.env.local' });
 // dotenv.config({ path: '.env.production' });
 
 const PORT = process.env.PORT;
