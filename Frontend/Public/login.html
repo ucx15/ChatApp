@@ -5,16 +5,20 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>ChatApp Auth</title>
+
+	<link rel="stylesheet" href="Styles/auth.css">
+	<script src="Scripts/login.js" defer></script>
+
 </head>
 
 <body>
 	<div class="auth-container">
-		<h1 class="auth-title">Sign in to ChatApp</h1>
+		<h1 class="auth-title">Sign in</h1>
 
-		<form class="auth-form">
+		<form id="auth-form" class="auth-form" method="POST">
 
-			<input class="input-field" type="text" name="username" placeholder="Username" required>
-			<input class="input-field" type="password" name="password" placeholder="Password" required>
+			<input id="input-username" class="input-field" type="text" name="username" placeholder="Username" required>
+			<input id="input-password" class="input-field" type="password" name="password" placeholder="Password" required>
 
 			<button id="btn-submit" class="submit-btn" type="submit">Login</button>
 		</form>

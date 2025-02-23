@@ -1,3 +1,7 @@
+if (localStorage.getItem('username') == null) {
+	window.location.href = './login.html';
+}
+
 class Message {
 	constructor(sender, content, timestamp) {
 		this.sender = sender;
@@ -23,29 +27,39 @@ class Message {
 }
 
 
-// Global variables
-const BACKEND_URL = window.location.hostname || "localhost";
-const BACKEND_PORT = 5000;
-const RECONNECT_DELAY = 3000; // ms
-const MAX_RECONNECT_ATTEMPTS = 5;
-// const USER = localStorage.getItem('user') || "Anonymous";
-
-let reconnectAttempts = 0;
-let socket = null;
-let clientID = null;  // fetched from the server
-
-
 // HTML elements
 const divMsgs = document.getElementById("messages-container");
 const buttonSend = document.getElementById('sender-btn');
 const inputText = document.getElementById('sender-field');
 
+const btnLogout = document.querySelector('#logout-btn');
+const usernameHeading = document.querySelector('#username-heading');
 var sidebar = document.getElementById('sidebar');
 var chatarea = document.getElementById('chatarea');
 var sbToggleImg = document.getElementById('sb-toggle-img');
 
 var burgerIconPath = "./Res/icons/menu-burger.svg";
 var crossIconPath = "./Res/icons/cross.svg";
+
+
+
+// Global variables
+const BACKEND_URL = window.location.hostname || "localhost";
+const BACKEND_PORT = 5000;
+
+const RECONNECT_DELAY = 3000; // ms
+const MAX_RECONNECT_ATTEMPTS = 5;
+const USER = localStorage.getItem('username');
+
+let reconnectAttempts = 0;
+let socket = null;
+let clientID = null;  // fetched from the server
+
+
+// <------ UI Functions ------>
+function setUserName() {
+	usernameHeading.innerHTML = USER;
+}
 
 function toggleSidebar() {
 	let view = sidebar.dataset.expanded;
@@ -65,7 +79,13 @@ function scrollMsgsToBottom() {
 	divMsgs.scrollTop = divMsgs.scrollHeight;
 }
 
-// Message Functions
+function logout() {
+	localStorage.removeItem('username');
+	window.location.href = './login.html';
+}
+
+
+// <------ Message Functions ------>
 function addMsgtoChat(msg) {
 	const msgContent = msg.content;
 
@@ -141,21 +161,21 @@ document.addEventListener('keydown', (event) => {
 	}
 });
 
-
 inputText.addEventListener('keyup', function (event) {
 	if (event.key === "Enter") sendMsg()
 });
 
 buttonSend.addEventListener('click', sendMsg);
 
+btnLogout.addEventListener('click', logout);
 
 
 // Network
-
 function wsConnection() {
 	socket = new WebSocket(`ws://${BACKEND_URL}:${BACKEND_PORT}`);
 
 	socket.addEventListener("open", (ev) => {
+		socket.send(JSON.stringify({ type: 'hello' , username: USER }));
 	});
 
 	socket.addEventListener("message", (ev) => {
@@ -199,12 +219,18 @@ function wsConnection() {
 	});
 }
 
-// Initial WS Connection
+
+// Control Flow
+setUserName();
 wsConnection();
 
 
-// TODO: save logged in user details in the local storage
+// TODO: Send JWT "accessToken" in all requests
+// TODO: Send JWT "accessToken" in ws messages also
+
 // TODO: Fetch user chats from the server
 // TODO: Message delivery status to be implemented
 // TODO: Server connection status to be displayed in the UI, and reconnection attempts
 // TODO: messages sent after disconnection to be sent to the server after reconnection
+
+// TODO: Rename "ChatApp" to something more awesome!🙂

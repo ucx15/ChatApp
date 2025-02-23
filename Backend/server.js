@@ -194,5 +194,8 @@ wss.on('connection', (ws) => {
 // console.log(`WebSocket Server @ ws://localhost:${PORT}`);
 
 
+// TODO: Authenticate HTTP requests
+// TODO: Authenticate WS connections
+
 // NOTE: Currently using ws id as client id, but need to implement a user based system
 // TODO: implement a user based message system

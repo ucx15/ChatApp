@@ -1,0 +1,91 @@
+:root {
+	--fg-color: #eee;
+	--fg2-color: #aaa;
+	--fg3-color: #666;
+
+	--bg-color: #121212;
+	--bg2-color: #121218b0;
+	--bg3-color: #404040;
+
+	--reject-color: hsl(348, 70%, 28%);
+	--reject2-color: hsl(348, 70%, 20%);
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	outline: none;
+}
+
+body {
+
+	display: flex;
+	align-items: center;
+	justify-content:center;
+	flex-direction: column;
+
+	font-family: Arial, Helvetica, sans-serif;
+	color: var(--fg-color);
+
+	background-color: var(--bg-color);
+	background-image: url("../Res/Images/batman2_1600px.jpg");
+	background-size: cover;
+
+	min-height: 100vh;
+}
+
+.auth-title {
+	border-bottom: .05em solid #404040;
+}
+
+.auth-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+
+	padding: 1.6rem;
+
+	width: 35rem;
+	border-radius: 1.6em;
+
+	box-shadow: 0 0 2em .1em black;
+	background-color: var(--bg2-color);
+	backdrop-filter: blur(.6em);
+}
+
+.auth-form {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	padding: 2rem;
+	width: 100%;
+	margin: 1rem 0;
+}
+
+.input-field {
+	font-size: 1em;
+	width: 80%;
+
+	height: 2rem;
+	padding: .6em;
+	margin-bottom: .2em;
+}
+
+.submit-btn {
+	font-size: 1rem;
+	width: 60%;
+	margin-top: 1em;
+	height: 2em;
+	background-color: rgb(63, 102, 255);
+	cursor: pointer;
+	border: none;
+	border-radius: .4em;
+}
+
+a {
+	text-decoration: none;
+	color: rgb(63, 102, 255);
+	font-style: italic;
+}
