@@ -24,15 +24,19 @@ class Message {
 
 
 // Global variables
-let CLIENT_ID = null;  // fetched from the server
 const BACKEND_URL = window.location.hostname || "localhost";
 const BACKEND_PORT = 5000;
-const SOCKET = new WebSocket(`ws://${BACKEND_URL}:${BACKEND_PORT}`);
+const RECONNECT_DELAY = 3000; // ms
+const MAX_RECONNECT_ATTEMPTS = 5;
+// const USER = localStorage.getItem('user') || "Anonymous";
+
+let reconnectAttempts = 0;
+let socket = null;
+let clientID = null;  // fetched from the server
 
 
 // HTML elements
 const divMsgs = document.getElementById("messages-container");
-
 const buttonSend = document.getElementById('sender-btn');
 const inputText = document.getElementById('sender-field');
 
@@ -82,7 +86,7 @@ function addMsgtoChat(msg) {
 
 	// Add classes to the elements
 	divContainer.classList.add('message');
-	if (msg.sender === CLIENT_ID) {
+	if (msg.sender === clientID) {
 		divContainer.classList.add('outgoing-msg');
 	}
 	else {
@@ -106,7 +110,7 @@ function sendMsgtoServer(msg) {
 	console.log("EVENT: Sending message");
 
 	// TODO: Send message to the server using the WebSocket
-	SOCKET.send(msg.toJSONString());
+	socket.send(msg.toJSONString());
 }
 
 function sendMsg() {
@@ -115,7 +119,7 @@ function sendMsg() {
 	if (!text) return null
 
 	const msg = new Message(
-		CLIENT_ID,
+		clientID,
 		text,
 		Date.now());
 
@@ -147,41 +151,60 @@ buttonSend.addEventListener('click', sendMsg);
 
 
 // Network
-SOCKET.addEventListener("open", (ev) => {
-});
 
-SOCKET.addEventListener("message", (ev) => {
-	console.log("EVENT: Message received");
-	const data = JSON.parse(ev.data);
-	console.log(data);
+function wsConnection() {
+	socket = new WebSocket(`ws://${BACKEND_URL}:${BACKEND_PORT}`);
 
-	switch (data.type) {
+	socket.addEventListener("open", (ev) => {
+	});
 
-		case 'hello':
-			CLIENT_ID = data.id;
-			break;
+	socket.addEventListener("message", (ev) => {
+		console.log("EVENT: Message received");
+		const data = JSON.parse(ev.data);
+		console.log(data);
 
-		case 'message':
-			addMsgtoChat(Message.fromJSON(data));
-			break;
+		switch (data.type) {
 
-		default:
-			console.warn(`Unknown message type ${data.type}`);
-	}
-});
+			case 'hello':
+				clientID = data.id;
+				break;
 
-SOCKET.addEventListener("error", (ev) => {
-    // TODO: Display error message in GUI and make it unusable 💀
-	console.error("WebSocket error:", ev);
+			case 'message':
+				addMsgtoChat(Message.fromJSON(data));
+				break;
 
-});
+			default:
+				console.warn(`Unknown message type ${data.type}`);
+		}
+	});
 
-SOCKET.addEventListener("close", (ev) => {
-    // TODO: Display connection closed error in GUI 😊
-    // alert("Connection to the chat server has been closed. Please refresh the page to reconnect.");
-    console.log("WebSocket connection closed:", ev);
-});
+	socket.addEventListener("error", (ev) => {
+		// TODO: Display error message in GUI and make it unusable 💀
+		console.error("WebSocket error:", ev);
+
+	});
+
+	socket.addEventListener("close", (ev) => {
+		// TODO: Display connection closed error in GUI 😊
+		// alert("Connection to the chat server has been closed. Please refresh the page to reconnect.");
+		console.log("WebSocket connection closed. Trying to reconnect", ev);
+
+		// Reconnect
+		if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+			console.error("Maximum reconnection attempts reached. Please refresh the page to reconnect.");
+			return;
+		}
+		setTimeout(() => wsConnection(), RECONNECT_DELAY);
+
+	});
+}
+
+// Initial WS Connection
+wsConnection();
 
 
+// TODO: save logged in user details in the local storage
 // TODO: Fetch user chats from the server
 // TODO: Message delivery status to be implemented
+// TODO: Server connection status to be displayed in the UI, and reconnection attempts
+// TODO: messages sent after disconnection to be sent to the server after reconnection
