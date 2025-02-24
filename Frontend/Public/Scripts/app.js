@@ -53,7 +53,7 @@ const USER = localStorage.getItem('username');
 
 let reconnectAttempts = 0;
 let socket = null;
-let clientID = null;  // fetched from the server
+let socketID = null;  // fetched from the server
 
 
 // <------ UI Functions ------>
@@ -106,7 +106,7 @@ function addMsgtoChat(msg) {
 
 	// Add classes to the elements
 	divContainer.classList.add('message');
-	if (msg.sender === clientID) {
+	if (msg.sender === USER) {
 		divContainer.classList.add('outgoing-msg');
 	}
 	else {
@@ -127,10 +127,12 @@ function addMsgtoChat(msg) {
 }
 
 function sendMsgtoServer(msg) {
-	console.log("EVENT: Sending message");
-
-	// TODO: Send message to the server using the WebSocket
+	if (socket.readyState !== WebSocket.OPEN) {
+		console.error("ERROR: Socket is not open. Unable to send message.");
+		return false;
+	}
 	socket.send(msg.toJSONString());
+	return true;
 }
 
 function sendMsg() {
@@ -139,13 +141,17 @@ function sendMsg() {
 	if (!text) return null
 
 	const msg = new Message(
-		clientID,
+		USER,
 		text,
 		Date.now());
 
-	// process the message
+	if (!sendMsgtoServer(msg)) {
+		// TODO: process the unsent message queue
+		console.error(`ERROR: Unable to send ${msg}`);
+	}
+
 	addMsgtoChat(msg)
-	sendMsgtoServer(msg);
+
 	inputText.focus();
 	inputText.value = "";
 }
@@ -175,7 +181,7 @@ function wsConnection() {
 	socket = new WebSocket(`ws://${BACKEND_URL}:${BACKEND_PORT}`);
 
 	socket.addEventListener("open", (ev) => {
-		socket.send(JSON.stringify({ type: 'hello' , username: USER }));
+		socket.send(JSON.stringify({ type: 'hello', username: USER }));
 	});
 
 	socket.addEventListener("message", (ev) => {
@@ -186,7 +192,7 @@ function wsConnection() {
 		switch (data.type) {
 
 			case 'hello':
-				clientID = data.id;
+				socketID = data.id;
 				break;
 
 			case 'message':
