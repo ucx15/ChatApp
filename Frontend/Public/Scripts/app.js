@@ -1,4 +1,8 @@
-if (localStorage.getItem('username') == null) {
+if (LS_getUsername() == "") {
+	window.location.href = './login.html';
+}
+
+if (LS_getRefreshToken() == "") {
 	window.location.href = './login.html';
 }
 
@@ -27,6 +31,13 @@ class Message {
 }
 
 
+function logout() {
+	LS_clearTokens();
+	LS_setUsername("");
+	window.location.href = './login.html';
+}
+
+
 // HTML elements
 const divMsgs = document.getElementById("messages-container");
 const buttonSend = document.getElementById('sender-btn');
@@ -42,14 +53,7 @@ var burgerIconPath = "./Res/icons/menu-burger.svg";
 var crossIconPath = "./Res/icons/cross.svg";
 
 
-
-// Global variables
-const BACKEND_URL = window.location.hostname || "localhost";
-const BACKEND_PORT = 5000;
-
-const RECONNECT_DELAY = 3000; // ms
-const MAX_RECONNECT_ATTEMPTS = 5;
-const USER = localStorage.getItem('username');
+const USER = LS_getUsername();
 
 let reconnectAttempts = 0;
 let socket = null;
@@ -79,10 +83,6 @@ function scrollMsgsToBottom() {
 	divMsgs.scrollTop = divMsgs.scrollHeight;
 }
 
-function logout() {
-	localStorage.removeItem('username');
-	window.location.href = './login.html';
-}
 
 
 // <------ Message Functions ------>

@@ -1,11 +1,6 @@
-if (localStorage.getItem('username')) {
+if (LS_getUsername()) {
 	window.location.href = '/app.html';
 }
-
-
-// Global variables
-const BACKEND_URL = window.location.hostname || "localhost";
-const BACKEND_PORT = 5000;
 
 
 // HTML elements
@@ -21,26 +16,29 @@ formAuth.addEventListener('submit', function (event) {
 	const username = inputUser.value.trim();
 	const password = inputPass.value.trim();
 
-	// Perform validation
-	if (username === '' || password === '') {
+	// Validation
+	if (!username || !password) {
 		alert('Please fill in both fields.');
 		return;
 	}
-
 
 	fetch(`http://${BACKEND_URL}:${BACKEND_PORT}/api/login`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({ username: username, password: password })
+		body: JSON.stringify({
+			username: username,
+			password: password
+		})
 	})
 		.then(response => response.json())
 		.then(data => {
 			if (data.status === "success") {
-				// localStorage.setItem('refreshToken', data.refreshToken);
-				// localStorage.setItem('accessToken', data.accessToken);
-				localStorage.setItem('username', username);
+				LS_setAccessToken(data.accessToken);
+				LS_setRefreshToken(data.refreshToken);
+				LS_setUsername(username);
+
 				window.location.href = '/app.html';
 			}
 
@@ -56,5 +54,4 @@ formAuth.addEventListener('submit', function (event) {
 });
 
 
-// TODO: save the refresh token and access token in local storage
 // TODO: combine login.js and register.js into auth.js and refactor

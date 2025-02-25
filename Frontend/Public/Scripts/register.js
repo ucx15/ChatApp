@@ -1,8 +1,3 @@
-// Global variables
-const BACKEND_URL = window.location.hostname || "localhost";
-const BACKEND_PORT = 5000;
-
-
 // HTML elements
 const formAuth = document.querySelector('#auth-form');
 const inputUser = document.querySelector('#input-username');
@@ -39,9 +34,10 @@ formAuth.addEventListener('submit', function (event) {
 		.then(response => response.json())
 		.then(data => {
 			if (data.status === "success") {
-				// localStorage.setItem('refreshToken', data.refreshToken);
-				// localStorage.setItem('accessToken', data.accessToken);
-				localStorage.setItem('username', username);
+				LS_setAccessToken(data.accessToken);
+				LS_setRefreshToken(data.refreshToken);
+				LS_setUsername(username);
+
 				window.location.href = '/app.html';
 			}
 
@@ -55,6 +51,3 @@ formAuth.addEventListener('submit', function (event) {
 			alert('An error occurred. Please try again.');
 		});
 });
-
-
-// TODO: save the refresh token and access token in local storage
