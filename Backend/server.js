@@ -3,7 +3,7 @@ const http = require('http');
 const WebSocket = require('ws');
 
 const mongoose = require('mongoose');
-// const sqlite = require('sqlite3').verbose();
+
 const cors = require('cors');
 const dotenv = require('dotenv');
 
@@ -31,76 +31,6 @@ const MONGO_URI = process.env.MONGO_URI;
 mongoose.connect(MONGO_URI)
 	.then(() => console.log('DB: Connected to MongoDB'))
 	.catch(err => console.error('DB Connection Error:', err));
-
-
-// const db = new sqlite.Database(DATABASE);
-
-
-// function generateTables() {
-// 	const query = `
-// 	CREATE TABLE IF NOT EXISTS messages (
-// 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-// 		uuid TEXT NOT NULL,
-
-// 		sender TEXT NOT NULL,
-// 		receiver TEXT NOT NULL,
-// 		content TEXT,
-// 		timestamp INTEGER NOT NULL
-// 	);`;
-
-// 	db.run(query, (err) => {
-// 		if (err) {
-// 			console.log("Error creating table");
-// 			console.error(err);
-// 		}
-// 	});
-
-// }
-// generateTables();
-
-
-// function fetchMessagesfromDB(callback) {
-// 	const query = `select * from messages;`;
-
-// 	db.all(query, (err, rows) => {
-// 		if (err) {
-// 			console.error(`Error fetching messages ${err}`);
-// 			return callback([])
-// 		}
-
-// 		else {
-// 			console.log("FETCHED all messages");
-// 			return callback(rows);
-// 		}
-// 	});
-
-// }
-
-// function addMessagetoDB(msg, receiver) {
-// 	const query = `INSERT INTO messages ( uuid, sender, receiver, content, timestamp) VALUES ( ?, ?, ?, ?, ? )`;
-
-// 	const msg_uuid = uuidv4();
-// 	console.log(msg);
-
-// 	db.run(query, msg_uuid, msg.sender, receiver, msg.content, msg.timestamp, (err) => {
-// 		if (err) {
-// 			console.log(`Error inserting message ${msg}`);
-// 			console.error(err);
-// 		}
-// 		else {
-// 			console.log("Message Saved to DB");
-// 		}
-// 	});
-
-// }
-
-// function _constructMessage(data) {
-// 	return {
-// 		sender: data.sender,
-// 		content: data.content,
-// 		timestamp: data.timestamp
-// 	}
-// }
 
 
 // Express Setup
