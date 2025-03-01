@@ -1,8 +1,8 @@
-if (LS_getUsername() == "") {
+if ( ! LS_getUsername()) {
 	window.location.href = './login.html';
 }
 
-if (LS_getRefreshToken() == "") {
+if ( !LS_getRefreshToken() ) {
 	window.location.href = './login.html';
 }
 
@@ -33,7 +33,7 @@ class Message {
 
 function logout() {
 	LS_clearTokens();
-	LS_setUsername("");
+	LS_clearUsername();
 	window.location.href = './login.html';
 }
 
@@ -43,26 +43,215 @@ const divMsgs = document.getElementById("messages-container");
 const buttonSend = document.getElementById('sender-btn');
 const inputText = document.getElementById('sender-field');
 
-const btnLogout = document.querySelector('#logout-btn');
 const usernameHeading = document.querySelector('#username-heading');
+
+const searchContainer = document.querySelector('#search-container');
+const searchField = document.querySelector('#input-ux-search');
+const searchBtn = document.querySelector('#btn-side-search');
+const btnLogout = document.querySelector('#logout-btn');
+
+
+const chatsContainer = document.querySelector('#chats-container');
+const channelsContainer = document.querySelector('#channels-container');
+
+const mainContentContainer = document.querySelector('#main-content-container')
+
+const btnNewChat = document.querySelector('#btn-new-chat');
+const btnNewChannel = document.querySelector('#btn-new-channel');
+
+const chatArea = document.getElementById('chatarea');
+
+
 var sidebar = document.getElementById('sidebar');
-var chatarea = document.getElementById('chatarea');
 var sbToggleImg = document.getElementById('sb-toggle-img');
 
 var burgerIconPath = "./Res/icons/menu-burger.svg";
 var crossIconPath = "./Res/icons/cross.svg";
 
 
-const USER = LS_getUsername();
+function getUSER() {
+	return LS_getUsername();
+}
+const USER = getUSER();
 
 let reconnectAttempts = 0;
-let socket = null;
+let SOCKET = null;
 let socketID = null;  // fetched from the server
+
+let currentActiveChat = null;
+let currentActiveChannel = null;
+
+let isMainContentVisible = true;
+let isChatAreaVisible = false;
+
+
+// <------ Switch Chats/Channels ------>
+
+// TODO: Collapse sidebar on mobile view when a chat is selected
+function switchChat(chatID) {
+	if ( isMainContentVisible ) {
+		isMainContentVisible = false;
+		mainContentContainer.classList.toggle('HIDE-ELEMENT');
+	}
+
+	if ( !isChatAreaVisible ) {
+		isChatAreaVisible = true;
+		chatArea.classList.toggle('HIDE-ELEMENT');
+	}
+
+	if (currentActiveChat == chatID) {
+		return;
+	}
+
+	const currentChatDOM = document.querySelector(`#chat-${currentActiveChat}`);
+	if (currentChatDOM) {
+		currentChatDOM.classList.toggle('SELECT-CONTACT');
+	}
+
+	currentActiveChat = chatID;
+	const chatElement = document.querySelector(`#chat-${chatID}`);
+	chatElement.classList.add('SELECT-CONTACT');
+
+	// TODO: change chat area header name
+	resetChatArea();
+
+	// Tell server that client selected current chat
+	if (SOCKET.readyState !== WebSocket.OPEN) {
+		console.error("ERROR: Socket is not open. Unable to send message.");
+		newWSConnection();
+	}
+
+	SOCKET.send(JSON.stringify(
+		{
+			type:'join-chat',
+			chatID,
+			username: USER,
+		}
+	));
+}
+
+
+function switchChannel() {
+	// TODO: To be implemented
+}
+
+
+
+// <------ UI Updaters ------>
+function resetUI() {
+	// set ui to inital
+	if (!isMainContentVisible) {
+		isMainContentVisible = true;
+		mainContentContainer.classList.toggle('HIDE-ELEMENT');
+	}
+
+	if (isChatAreaVisible) {
+		isChatAreaVisible = false;
+		chatArea.classList.toggle('HIDE-ELEMENT');
+	}
+
+
+	if (currentActiveChat) {
+
+		const currentChatDOM = document.querySelector(`#chat-${currentActiveChat}`);
+
+		console.log(currentChatDOM);
+		currentChatDOM.classList.toggle('SELECT-CONTACT');
+		console.log(currentChatDOM);
+
+	}
+
+	currentActiveChat = null;
+}
+
+function resetChatArea() {
+	divMsgs.innerHTML = "";
+}
+
+function addNewChattoUI(chatID) {
+	const chatHTML = `
+		<div class="contact" id="chat-${chatID}" data-chat-id="${chatID}" onclick="switchChat('${chatID}')">
+			<img src="./Res/icons/comment.svg" class="icon-img" alt="">
+			<p> ${chatID}</p>
+		</div>`
+
+	chatsContainer.insertAdjacentHTML('afterbegin', chatHTML);
+	// chatsContainer.innerHTML = chatHTML + chatsContainer.innerHTML;
+}
+
+
+// <------ UI Handlers ------>
+async function handleFetchUserChats() {
+	const res = await fetch(`http://${BACKEND_URL}:${BACKEND_PORT}/api/user-rooms`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${LS_getAccessToken()}`
+		},
+		body: JSON.stringify({ username: USER })
+	});
+
+	const data = await res.json();
+	console.log(`handleFetchUserChats() -> '${data.status}' : ${data.message}`);
+
+	if (res.ok) {
+		data.rooms.forEach((room) => {
+			addNewChattoUI(room);
+		});
+		return;
+	}
+
+	else if (res.status === 403) {
+		if (await refreshAccessToken()) {
+			handleFetchUserChats();
+		}
+	}
+}
+
+// TODO: To be implemented
+async function handleFetchUserChannels() {}
+
+
+async function handleNewChat() {
+	try {
+		const res = await fetch(`http://${BACKEND_URL}:${BACKEND_PORT}/api/room/make`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${LS_getAccessToken()}`
+			},
+			body: JSON.stringify({ username: USER })
+		});
+
+		const data = await res.json();
+		console.log(`HandleNewChat() -> '${data.status}' : ${data.message}`);
+
+		if (res.ok) {
+			addNewChattoUI(data.roomID);
+			return;
+		}
+
+		else if (res.status === 403) {
+			if (await refreshAccessToken()) {
+				handleNewChat();
+			}
+		}
+	}
+
+	catch (err) {
+		console.error(err);
+	};
+
+}
+
+// TODO: To be implemented
+async function handleNewChannel() {}
+
 
 
 // <------ UI Functions ------>
-function setUserName() {
-	usernameHeading.innerHTML = USER;
+function setUsernameHeading() {
+	usernameHeading.innerHTML = LS_getUsername();
 }
 
 function toggleSidebar() {
@@ -125,16 +314,20 @@ function addMsgtoChat(msg) {
 	divMsgs.appendChild(divContainer);
 	scrollMsgsToBottom();
 }
-
 function sendMsgtoServer(msg) {
-	if (socket.readyState !== WebSocket.OPEN) {
+	if (SOCKET.readyState !== WebSocket.OPEN) {
 		console.error("ERROR: Socket is not open. Unable to send message.");
 		return false;
 	}
-	socket.send(msg.toJSONString());
+	SOCKET.send(JSON.stringify(
+		{
+			type:'message',
+			msg,
+			room: currentActiveChat,
+		}
+	));
 	return true;
 }
-
 function sendMsg() {
 	// construct the message object
 	const text = inputText.value.trim();
@@ -165,26 +358,50 @@ document.addEventListener('keydown', (event) => {
 	if (document.activeElement !== inputText && event.key.length === 1) {
 		inputText.focus();
 	}
+
+	// reset layout when escape key is pressed
+	if (event.key === "Escape") {
+		resetUI();
+	}
 });
 
 inputText.addEventListener('keyup', function (event) {
 	if (event.key === "Enter") sendMsg()
 });
 
+
 buttonSend.addEventListener('click', sendMsg);
 
 btnLogout.addEventListener('click', logout);
 
 
-// Network
-function wsConnection() {
-	socket = new WebSocket(`ws://${BACKEND_URL}:${BACKEND_PORT}`);
+// TODO: Switch to new room created
+btnNewChat.addEventListener('click', handleNewChat);
 
-	socket.addEventListener("open", (ev) => {
-		socket.send(JSON.stringify({ type: 'hello', username: USER }));
+btnNewChannel.addEventListener('click', handleNewChannel);
+
+
+// Network
+function newWSConnection() {
+	if ( SOCKET ) {
+		SOCKET.close();
+	}
+
+	SOCKET = new WebSocket(`ws://${BACKEND_URL}:${BACKEND_PORT}`);
+}
+
+function wsHandle() {
+	SOCKET.addEventListener("open", (ev) => {
+		SOCKET.send(JSON.stringify(
+			{
+				type: 'hello',
+				username: USER,
+				accessToken: LS_getAccessToken()
+			}
+		));
 	});
 
-	socket.addEventListener("message", (ev) => {
+	SOCKET.addEventListener("message", (ev) => {
 		console.log("EVENT: Message received");
 		const data = JSON.parse(ev.data);
 		console.log(data);
@@ -196,7 +413,16 @@ function wsConnection() {
 				break;
 
 			case 'message':
-				addMsgtoChat(Message.fromJSON(data));
+				addMsgtoChat(Message.fromJSON(data.msg));
+				break;
+
+			case 'error':
+				if (data.message === "Invalid Access Token") {
+					console.warn("WARN: Invalid Access Token. refreshing the token.");
+					if ( refreshAccessToken() ) {
+						newWSConnection();
+					}
+				}
 				break;
 
 			default:
@@ -204,13 +430,13 @@ function wsConnection() {
 		}
 	});
 
-	socket.addEventListener("error", (ev) => {
+	SOCKET.addEventListener("error", (ev) => {
 		// TODO: Display error message in GUI and make it unusable 💀
 		console.error("WebSocket error:", ev);
 
 	});
 
-	socket.addEventListener("close", (ev) => {
+	SOCKET.addEventListener("close", (ev) => {
 		// TODO: Display connection closed error in GUI 😊
 		// alert("Connection to the chat server has been closed. Please refresh the page to reconnect.");
 		console.log("WebSocket connection closed. Trying to reconnect", ev);
@@ -220,18 +446,32 @@ function wsConnection() {
 			console.error("Maximum reconnection attempts reached. Please refresh the page to reconnect.");
 			return;
 		}
-		setTimeout(() => wsConnection(), RECONNECT_DELAY);
+		reconnectAttempts++;
+		setTimeout(() => {
+			newWSConnection();
+			wsHandle();
+		}, RECONNECT_DELAY);
 
 	});
 }
 
+function wsHandleReconnect() {
+	// TODO: to be implemented
+}
+
 
 // Control Flow
-setUserName();
-wsConnection();
+setUsernameHeading();
+
+handleFetchUserChats();
+handleFetchUserChannels();
 
 
-// TODO: Send JWT "accessToken" in all requests
+newWSConnection();
+wsHandle();
+
+
+
 // TODO: Send JWT "accessToken" in ws messages also
 
 // TODO: Fetch user chats from the server

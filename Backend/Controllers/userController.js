@@ -90,8 +90,9 @@ const logout = async (req, res) => {
 	// NOTE: Can be implemented by removing the refresh token from the database
 }
 
+// TODO: send RoomName also in the response
 const fetchRooms = async (req, res) => {
-	console.log('\nPOST: /api/rooms');
+	console.log('\nPOST: /api/user-rooms');
 
 	try {
 		const { username } = req.body;
@@ -103,7 +104,8 @@ const fetchRooms = async (req, res) => {
 		}
 
 		const rooms = await UserModel.fetchRooms(username);
-		res.json({ rooms, status: "success" });
+		console.log(`Rooms fetched for user:'${username}'`);
+		res.json({ message: "Rooms Fetched.", status: "success", rooms });
 	}
 	catch (error) {
 		console.error('ERROR: Cannot fetch rooms:', error);

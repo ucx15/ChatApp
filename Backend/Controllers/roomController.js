@@ -1,7 +1,10 @@
+const { v4: uuidv4 } = require('uuid');
+
 const RoomModel = require("../Models/Room");
 const UserModel = require("../Models/User");
 
 
+// TODO: initialize room name at creation
 const makeRoom = async (req, res) => {
 	console.log("POST: /api/room/make");
 
@@ -13,16 +16,15 @@ const makeRoom = async (req, res) => {
 			return res.status(400).json({ message: `ERROR: Missing REQUIRED fields  username:'${username}'`, status: "error" });
 		}
 
-		const roomID = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+		const roomID = uuidv4().substring(0, 8);
 
 		await RoomModel.createRoom(roomID, username);
 
 		// Add the user to the room
-		await RoomModel.joinRoom(roomID, username);
 		await UserModel.joinRoom(username, roomID);
 
 		console.log(`\tUser '${username}' created room '${roomID}'`);
-		res.json({ message: `Room:'${roomID}' creation success`, status: "success" });
+		res.json({ message: `Room created`, status: "success", roomID });
 	}
 	catch (error) {
 		console.error("ERROR:\Failed to create room", error);
@@ -170,7 +172,7 @@ const addMessage = async (msg, roomID) => {
 		await RoomModel.addMessage(roomID, msg);
 	}
 	catch (error) {
-		console.error("ERROR:\Failed to add message", error);
+		console.error("ERROR:\tFailed to add message", error);
 	}
 };
 

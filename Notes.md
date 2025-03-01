@@ -8,13 +8,25 @@ After connection is established-
 
 <!-- TODO: To be implemented -->
 
-1. **SERVER** sends a message to the **CLIENT** in format:
+1. **CLIENT** -> **SERVER**
 
-    ```json
+    ``` json
     {
-        "kind": "hello",
+        "type": "hello",
+        "username": "uc",
+        "accessToken": "Client JWT Access Token"
     }
     ```
+
+    server authenticates, if invalid token, server sends error message.
+
+    ``` json
+    {
+        "type": "error",
+        "message": "Invalid Access Token"
+    }
+    ```
+    
 
 ## CSS Classes
 

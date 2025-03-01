@@ -27,3 +27,6 @@ function LS_clearTokens() {
 	localStorage.removeItem('accessToken');
 	localStorage.removeItem('refreshToken');
 }
+function LS_clearUsername() {
+	localStorage.removeItem('username');
+}

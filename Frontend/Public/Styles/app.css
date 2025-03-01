@@ -12,6 +12,8 @@
   --reject-color: hsl(348, 70%, 28%);
   --reject2-color: hsl(348, 70%, 20%);
 
+  --accent-color: hsl(218, 10%, 28%);
+
   --sb-label-size: .9rem;
   --sb-bg-mobile: #121218b0;
 
@@ -38,6 +40,21 @@ body {
   font-size: 1rem;
 
   min-height: 100vh;
+}
+
+
+.HIDE-ELEMENT {
+  /* important */
+  display: none !important;
+}
+
+.SHOW-ELEMENT {
+  display: flex;
+}
+
+
+.SELECT-CONTACT {
+  background-color: var(--bg3-color);
 }
 
 
@@ -68,7 +85,7 @@ body {
   justify-content: space-between;
 
   width: 20%;
-  min-width: 14rem;
+  min-width: 16rem;
   height: 100vh;
   color: var(--fg-color);
   background-color: var(--bg2-color);
@@ -98,7 +115,54 @@ body {
 .sidebar-body {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex-grow: 1;
+}
+
+.sidebar .ux {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: space-evenly;
+
+  width: 100%;
+
+}
+
+.sidebar .search-bar {
+  /* visibility: collapse; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: .4em;
+  background-color: var(--b2-color);
+  border: .1em solid var(--fg3-color);
+  border-radius: .4em;
+}
+
+.sidebar .search-bar input {
+  width: 100%;
+  padding: .4em;
+
+  font-size: 1.2rem;
+
+  color: var(--fg-color);
+  background: none;
+
+  outline: none;
+  border: none;
+  border-radius: .2em;
+
+}
+
+#btn-side-search {
+  text-align: center;
+  width:3rem;
+  padding: .4em;
+  border-radius: .2em;
+  cursor: pointer;
 }
 
 .sb-section {
@@ -134,20 +198,8 @@ body {
 
   margin: .1rem 0;
   padding: .5rem;
-}
 
-.contact:hover {
   cursor: pointer;
-  background-color: var(--bg2-color);
-}
-
-.contact:active {
-  background-color: var(--reject-color);
-}
-
-
-.contacts .selected-cont {
-  background-color: var(--bg3-color);
 }
 
 
@@ -184,14 +236,80 @@ body {
 }
 
 
+/* ------- Main Content ------- */
+
+.main-content-container {
+  display: flex;
+  flex-grow: 1;
+  height: 100vh;
+
+  background-image: url("../Res/Images/batman1_1600px.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.main-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+  flex-grow: 1;
+
+  /* background-color: rgba(0, 0, 0, 0.755); */
+  background: radial-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8));
+  backdrop-filter: blur(.6em);
+}
+
+.main-content h1 {
+  margin: 2rem 0;
+  font-size: 2.4rem;
+  color: var(--fg-color);
+}
+
+.main-content p {
+  margin: .5rem 0;
+  font-size: 1.2rem;
+  color: var(--fg2-color);
+}
+
+
+.main-content .ux-btns {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  color: var(--fg-color);
+
+  gap: 1rem;
+}
+
+.main-content .btn-new-x {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+  width: 8rem;
+  height: 4rem;
+
+  background-color: var(--bg2-color);
+  border-radius: 10px;
+  transition: background-color 100ms ease-in-out;
+}
+
+.main-content .btn-new-x:hover {
+  background-color: var(--accent-color);
+}
+
+
 /* ------- Chat AREA ------- */
 .chat-area {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
-  width: 100%;
-  height: 100%;
+  flex-grow: 1;
 }
 
 .chat-body {
@@ -331,6 +449,7 @@ body {
 }
 
 
+
 /* Media Queries */
 
 @media (max-width: 768px) {
@@ -343,7 +462,7 @@ body {
     width: 100%;
 
     background-color: var(--sb-bg-mobile);
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(.6em);
   }
 
   .sidebar[data-expanded="true"] {

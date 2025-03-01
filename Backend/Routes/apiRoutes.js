@@ -22,6 +22,7 @@ router.post('/logout', userController.logout);
 router.post('/refresh-token', authController.refreshAccessToken);
 
 // Room Routes
+// TODO: rename /room/x  ->  /chat/x
 router.post('/user-rooms', authController.authorize, userController.fetchRooms);
 router.post('/room/make', authController.authorize, roomController.makeRoom);
 router.post('/room/join', authController.authorize, roomController.joinRoom);

@@ -46,8 +46,8 @@ const leaveRoom = async (username, roomID) => {
 
 // Get a user's room. Returns an [] if not found.
 const fetchRooms = async (username) => {
-	const user = User.findOne({ username })
-	return !user.rooms ? [] : user.rooms;
+	const user = await User.findOne({ username })
+	return user.rooms ? user.rooms : [];
 };
 
 module.exports = { User, createUser, findUser, joinRoom, leaveRoom, fetchRooms };

@@ -10,26 +10,28 @@ async function refreshAccessToken() {
 		return false;
 	}
 
-	fetch(`http://${BACKEND_URL}:${BACKEND_PORT}/api/refresh-token`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({ username: username, refreshToken: refreshToken })
-	})
-		.then(response => response.json())
-		.then(data => {
-			if (data.status === "success") {
-				console.error('ERROR: Cannot refresh access token:', data.message);
-				return false;
-			}
-
-			LS_setAccessToken(data.accessToken);
-			LS_setRefreshToken(data.refreshToken);
-			return true;
+	try {
+		const res = await fetch(`http://${BACKEND_URL}:${BACKEND_PORT}/api/refresh-token`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ refreshToken, username })
 		})
-		.catch(error => {
-			console.error('ERROR: Cannot refresh access token:', error);
-			return false;
-		});
+
+		const data = await res.json();
+		console.log(`refreshAccessToken() -> '${data.status}' : ${data.message}`);
+
+		if (res.ok) {
+			LS_setAccessToken(data.accessToken);
+			return true;
+		}
+
+		return false;
+	}
+
+	catch (error) {
+		console.error('ERROR: Cannot refresh access token:', error);
+		return false;
+	};
 }

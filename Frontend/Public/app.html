@@ -26,14 +26,37 @@
             <div id="username-heading"></div>
         </div>
 
+
+        <div id="search-container" class="search-bar">
+            <input type="text" class="input-field" name="input-field" id="input-ux-search"
+                placeholder="Room ID to join room" required>
+            <div id="btn-side-search">
+                🔍
+            </div>
+        </div>
+
         <div class="sidebar-body">
+
+            <div class="sb-section">
+                <div class="sb-label">CHATS</div>
+                <div class="sb-line"> </div>
+
+                <!-- All dynamically generated chats go inside here -->
+                <div class="contacts" id="chats-container">
+
+                    <!-- <div class="contact"> <img src="./Res/icons/comment.svg" class="icon-img" alt="">
+                        <p> Person 1</p>
+                    </div> -->
+
+                </div>
+            </div>
 
             <div class="sb-section">
                 <div class="sb-label">CHANNELS</div>
                 <div class="sb-line"></div>
 
-                <div class="contacts">
-                    <div class="contact selected-cont"> <img src="./Res/icons/comment.svg" class="icon-img" alt="">
+                <div class="contacts" id="channels-container">
+                    <div class="contact"> <img src="./Res/icons/comment.svg" class="icon-img" alt="">
                         <p>Channel Global</p>
                     </div>
                     <!--
@@ -47,24 +70,7 @@
                 </div>
             </div>
 
-            <div class="sb-section">
-                <div class="sb-label">PEOPLE</div>
-                <div class="sb-line"> </div>
 
-                <div class="contacts">
-                    <div class="contact"> <img src="./Res/icons/comment.svg" class="icon-img" alt="">
-                        <p> Person 1</p>
-                    </div>
-                    <!--
-                    <div class="contact"> <img src="./Res/icons/comment.svg" class="icon-img" alt="">
-                        <p> Person 2</p>
-                    </div>
-                    <div class="contact"> <img src="./Res/icons/comment.svg" class="icon-img" alt="">
-                        <p> Person 3</p>
-                    </div>
-                    -->
-                </div>
-            </div>
         </div>
 
         <div class="sb-line"></div>
@@ -77,8 +83,43 @@
     </div>
 
 
+    <!-- Main Content -->
+    <div id="main-content-container" class="main-content-container">
+
+        <div  class="main-content">
+            <h1>Welcome to ChatApp</h1>
+            <p>Select a channel or person to start chatting.</p>
+            <div class="ux-btns">
+                <div class="btn-new-x" id="btn-new-chat">
+                    <img src="./Res/icons/paper-plane2.svg" alt="" class="icon-img">
+                    Chat
+                </div>
+                <div class="btn-new-x" id="btn-new-channel">
+                    <img src="./Res/icons/paper-plane2.svg" alt="" class="icon-img">
+                    Channel
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TODO: implement one-to-one channels -->
+    <!-- <div id="chat-maker-container" class="chat-maker-container">
+
+        <h2>Username</h2>
+
+        <input type="text" name="chat-maker-username" id="chat-maker-username" placeholder="Username" required>
+
+        <div id="chat-maker-btn" class="">
+            <img src="./Res/icons/paper-plane.svg" class="icon-img" alt="send-icon.svg">
+        </div>
+
+        <div id="chat-maker-err" class="HIDE-ELEMENT">NOT Found</div>
+    </div> -->
+
+
     <!-- Chat Area -->
-    <div class="chat-area" id="chatarea">
+    <div class="chat-area HIDE-ELEMENT" id="chatarea">
 
         <div class="chat-body">
 
@@ -99,13 +140,24 @@
               placeholder="Message"
             /> -->
 
+            <!-- TODO: Change it to text field or something to accomodate larger text -->
             <input type="text" name="sender-field" id="sender-field" placeholder="Message" required>
             <!-- <textarea name="sender-field" id="sender-field" placeholder="Message" required></textarea> -->
-            <div id="sender-btn"> <img src="./Res/icons/paper-plane.svg" class="icon-img"
-                    alt="send-icon.svg"> </div>
+            <div id="sender-btn"> <img src="./Res/icons/paper-plane.svg" class="icon-img" alt="send-icon.svg"> </div>
 
         </div>
     </div>
+
+
+    <!-- Error Message -->
+    <!-- <div id="err-msg-container">
+        <div id="btn-disable-err">X</div>
+        <div id="err-msg">Error</div>
+    </div> -->
+
 </body>
 
 </html>
+
+
+<!-- TODO: Better Icons -->

@@ -24,7 +24,7 @@ const createRoom = async (roomID, username) => {
 		id: roomID,
 		name: roomID,
 		admin: username,
-		members: [username],
+		users: [username],
 		messages: [],
 	});
 	return await room.save();
@@ -55,9 +55,9 @@ const fetchAllRooms = async () => {
 
 const addMessage = async (roomID, message) => {
 	return await Room.findOneAndUpdate(
-		{ id: roomID},
+		{ id: roomID },
 		{ $push: { messages: message } }
 	);
 }
 
-module.exports = { Room, createRoom, findRoom, joinRoom, leaveRoom , fetchAllRooms, addMessage};
+module.exports = { Room, createRoom, findRoom, joinRoom, leaveRoom, fetchAllRooms, addMessage };

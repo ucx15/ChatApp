@@ -4,8 +4,6 @@ require('dotenv').config();
 
 
 const genToken = (username, type='access') => {
-	console.log(`\tGenerating ${type} token for '${username}'`);
-
 	if (!(username && username.trim())) {
 		console.error("ERROR:\t'authController.genToken()' -> Missing required parameters");
 		return;
@@ -54,7 +52,7 @@ const genTokenPair = (username) => {
 }
 
 const refreshAccessToken = (req, res) => {
-	console.log("AUTH:\tRefreshing Access Token");
+	console.log("\nAUTH:\tRefreshing Access Token");
 
 	const refreshToken = req.body.refreshToken
 	const username = req.body.username
@@ -68,35 +66,57 @@ const refreshAccessToken = (req, res) => {
 		if (err) {
 			if (err.name === "TokenExpiredError") {
 				console.error("WARN:\tRefresh Token expired");
-				return res.status(403).json({ message: "Refresh Token expired", status: "error" });
+				return res.status(401).json({ message: "Refresh Token expired", status: "error" });
 			}
 
 			else {
-				console.error("WARN:\tInvalid Access Token");
-				return res.status(403).json({ message: "Invalid Access Token", status: "error" });
+				console.error("WARN:\tInvalid Refresh Token");
+				return res.status(401).json({ message: "Invalid Refresh Token, Login again!", status: "error" });
 			}
 		}
 
 
 		if (user.username !== username.trim()) {
 			console.error(`WARN:\tUsername mismatch\tExprected:'${username}'  Provided:'${user.username}'`);
-			return res.status(403).json({ message: "Unauthorized", status: "error" });
+			return res.status(401).json({ message: "Unauthorized", status: "error" });
 		}
 
 		const newAccessToken = genToken(user.username);
-		console.log(`New Access Token: generated for '${user.username}'`);
+		console.log(`\tNew Access Token: generated for '${user.username}'`);
 		res.json({ message: "New token generated!", status: "success", accessToken: newAccessToken })
 	})
 }
 
+function authorizeToken(token) {
+	if (!token) {
+		console.error("ERROR: Missing token");
+		return null;
+	}
+
+	try {
+		const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+		console.log(`\tAuthorized: ${user.username}`);
+		return user.username;
+	}
+	catch (err) {
+		if (err.name === "TokenExpiredError") {
+			console.error("WARN:\tAccess Token expired");
+		}
+		else {
+			console.error("WARN:\tInvalid Access Token");
+		}
+		return null;
+	}
+}
+
 const authorize = (req, res, next) => {
-	console.log(`AUTH:\tAuthorizing ${req.method} request to ${req.originalUrl}`);
+	console.log(`\nAUTH: Authorizing ${req.method} request to ${req.originalUrl}`);
 
 	const authHeader = req.headers['authorization'];
 	const token = authHeader && authHeader.split(' ')[1];
 
 	if (!token) {
-		console.error("ERROR: Missing token");
+		console.error("ERROR:\tMissing token");
 		return res.status(401).json({ message: "Unauthorized", status: "error" });
 	}
 
@@ -117,4 +137,4 @@ const authorize = (req, res, next) => {
 	});
 }
 
-module.exports = { genToken, genTokenPair, refreshAccessToken, authorize };
+module.exports = { genToken, genTokenPair, refreshAccessToken, authorize, authorizeToken };

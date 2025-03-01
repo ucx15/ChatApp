@@ -12,8 +12,10 @@ const { v4: uuidv4 } = require('uuid');
 const apiRoutes = require("./Routes/apiRoutes");
 const defaultRoutes = require("./Routes/defaultRoutes");
 
-// const RoomModel = require("./Models/Room.js");
-// const roomController = require("./Controllers/roomController.js");
+const authController = require('./Controllers/authController');
+
+const RoomModel = require("./Models/Room.js");
+const roomController = require("./Controllers/roomController.js");
 
 
 dotenv.config();
@@ -125,66 +127,120 @@ server.listen(PORT, () => {
 
 const wss = new WebSocket.Server({ server });
 
-// Array to store connected clients
-let clients = [];
+// for storing the connected clients
+let clients = {};
 
-wss.on('connection', (ws) => {
 
+wss.on('connection', ws => {
 	// Generate and send a unique client ID to Client
 	const clientId = uuidv4();
-	clients.push({ id: clientId, ws });
+	clients[clientId] = { ws, isAuthorized: false, username: null, activeRoom: null };
 
 	ws.send(JSON.stringify({ type: 'hello', id: clientId }));
 	console.log(`Client connected: ${clientId}`);
 
-	// TODO: Send saved messages to client
-	// NOTE: Currently using SQLite3 but migrate to MongoDB
-
-	// const messages = await RoomModel.getRoomMessages(roomID);
-	// socket.emit('room_messages', messages);
-
-	// fetchMessagesfromDB((msgs) => {
-	// 	if (msgs) {
-	// 		msgs.forEach((msg) => {
-	// 			msg = _constructMessage(msg);
-	// 			msg.type = "message";
-	// 			let msgString = JSON.stringify(msg);
-
-	// 			clients.forEach((client) => {
-	// 				client = client.ws;
-	// 				if ((client.readyState === WebSocket.OPEN)) {
-	// 					client.send(msgString);
-	// 				}
-	// 			});
-
-	// 		})
-	// 	}
-
-	// });
-
 	// Code to handle incoming messages
-	ws.on('message', (data) => {
-		data = JSON.parse(data)
-		data.type = 'message';
+	ws.on('message', (dataString) => {
+		const data = JSON.parse(dataString)
 
-		// TODO: Save the message to DB, currently using SQLite3 but migrate to MongoDB
-		// addMessagetoDB(data, "any");
-		// await RoomModel.addMessageToRoom(roomID, username, message);
+		console.log(data);
 
+		switch (data.type) {
+			// Authentication
 
-		// Broadcast the message to all clients
-		clients.forEach((client) => {
-			client = client.ws;
-			if ((client !== ws) && (client.readyState === WebSocket.OPEN)) {
-				client.send(JSON.stringify(data));
+			case 'hello': {
+				// TODO: impelement more robust authentication system, and token expiry
+				// const user = authController.authorizeToken(data.accessToken)
+
+				// if (!user || user !== data.username) {
+				// 	ws.send(JSON.stringify(
+				// 		{
+				// 			type: 'error',
+				// 			message: 'Invalid Access Token'
+				// 		}
+				// 	));
+				// 	return;
+				// }
+
+				const client = clients[clientId];
+
+				client.isAuthorized = true;
+				// client.username = user;
+				client.username = data.username;
+
+				console.log(`'${data.username}' is authenticated for WS connection`);
+				break;
 			}
-		});
+
+			case 'join-chat': {
+				const client = clients[clientId];
+
+				RoomModel.findRoom(data.chatID)
+					.then((room) => {
+						if (!room) {
+							console.log("Room not found");
+							return;
+						}
+
+						client.activeRoom = data.chatID;
+						console.log(`'WS:\t${client.username}' joined room ${data.chatID}`);
+
+						// Sending all of the prev msgs to client
+						room.messages.forEach((msg) => {
+							let msgString = JSON.stringify(
+								{
+									type: 'message',
+									msg,
+									room: data.chatID
+								});
+
+							client.ws.send(msgString);
+						});
+
+					});
+
+				break;
+			}
+
+			case 'join-channel': {
+				// TODO: implement join-channel
+				break;
+
+			}
+
+			// Handling messages transfer
+			case 'message': {
+				if (!clients[clientId].isAuthorized) {
+					console.log("Unauthorized Client");
+					return;
+				}
+
+				// Save message to database
+				roomController.addMessage(data.msg, data.room)
+
+				// Broadcast the message to all clients
+				const senderClient = clients[clientId];
+
+				Object.values(clients).forEach((recieverClient) => {
+					// const curSock = client.ws;
+					if (
+						(recieverClient.ws !== ws) &&
+						(recieverClient.ws.readyState === WebSocket.OPEN) &&
+						(recieverClient.activeRoom === senderClient.activeRoom)) {
+							recieverClient.ws.send(JSON.stringify(data));
+						}
+				});
+				break;
+			}
+
+			default: console.log("Unknown message type");
+		}
 
 	});
 
 	ws.on('close', () => {
 		console.log(`Client disconnected: ${clientId}`);
-		clients = clients.filter(client => client.id !== clientId);
+		delete clients[clientId];
 	});
 
 	ws.on('error', (error) => {
@@ -194,6 +250,3 @@ wss.on('connection', (ws) => {
 
 
 // TODO: Authenticate WS connections
-
-// NOTE: Currently using ws id as client id, but need to implement a user based system
-// TODO: implement a user based message system
