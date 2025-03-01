@@ -24,7 +24,7 @@ formAuth.addEventListener('submit', function (event) {
 		return;
 	}
 
-	fetch(`http://${BACKEND_URL}:${BACKEND_PORT}/api/signup`, {
+	fetch(`${BACKEND_URI}/api/signup`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'

@@ -182,7 +182,7 @@ function addNewChattoUI(chatID) {
 
 // <------ UI Handlers ------>
 async function handleFetchUserChats() {
-	const res = await fetch(`http://${BACKEND_URL}:${BACKEND_PORT}/api/user-rooms`, {
+	const res = await fetch(`${BACKEND_URI}/api/user-rooms`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -214,7 +214,7 @@ async function handleFetchUserChannels() {}
 
 async function handleNewChat() {
 	try {
-		const res = await fetch(`http://${BACKEND_URL}:${BACKEND_PORT}/api/room/make`, {
+		const res = await fetch(`${BACKEND_URI}/api/room/make`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -387,7 +387,7 @@ function newWSConnection() {
 		SOCKET.close();
 	}
 
-	SOCKET = new WebSocket(`ws://${BACKEND_URL}:${BACKEND_PORT}`);
+	SOCKET = new WebSocket(WS_BACKEND_URI);
 }
 
 function wsHandle() {

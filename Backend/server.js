@@ -23,7 +23,6 @@ dotenv.config();
 // dotenv.config({ path: '.env.production' });
 
 const PORT = process.env.PORT;
-// const DATABASE = process.env.DATABASE || 'test.db';
 const MONGO_URI = process.env.MONGO_URI;
 
 
@@ -73,7 +72,7 @@ wss.on('connection', ws => {
 	ws.on('message', (dataString) => {
 		const data = JSON.parse(dataString)
 
-		console.log(data);
+		console.log(data); // Debugging, remove in production
 
 		switch (data.type) {
 			// Authentication
@@ -152,12 +151,12 @@ wss.on('connection', ws => {
 				const senderClient = clients[clientId];
 
 				Object.values(clients).forEach((recieverClient) => {
-					// const curSock = client.ws;
+					const reClientSock = recieverClient.ws;
 					if (
-						(recieverClient.ws !== ws) &&
-						(recieverClient.ws.readyState === WebSocket.OPEN) &&
+						(reClientSock !== ws) &&
+						(reClientSock.readyState === WebSocket.OPEN) &&
 						(recieverClient.activeRoom === senderClient.activeRoom)) {
-							recieverClient.ws.send(JSON.stringify(data));
+							reClientSock.send(JSON.stringify(data));
 						}
 				});
 				break;

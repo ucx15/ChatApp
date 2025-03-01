@@ -11,7 +11,7 @@ async function refreshAccessToken() {
 	}
 
 	try {
-		const res = await fetch(`http://${BACKEND_URL}:${BACKEND_PORT}/api/refresh-token`, {
+		const res = await fetch(`${BACKEND_URI}/api/refresh-token`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
