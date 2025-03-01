@@ -7,7 +7,7 @@ if (BACKEND_HOST === "localhost") {
 }
 
 const BACKEND_URI = `http://${BACKEND_HOST}:${BACKEND_PORT}`;
-const WS_BACKEND_URI = `ws://${BACKEND_HOST}:${BACKEND_PORT}`;
+const WS_BACKEND_URI = `ws://${BACKEND_HOST}:${BACKEND_PORT}/ws`;
 
 const RECONNECT_DELAY = 5000; // ms
 const MAX_RECONNECT_ATTEMPTS = 10;

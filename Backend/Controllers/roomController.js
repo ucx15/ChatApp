@@ -52,17 +52,17 @@ const joinRoom = async (req, res) => {
 
 		if (room.users.includes(username)) {
 			console.error(`ERROR: User '${username}' already in room '${roomID}'`);
-			return res.status(409).json({ message: `User '${username}' already in room '${roomID}'`, status: "error" });
+			return res.status(409).json({ message: `'${username}' already in room '${roomID}'`, status: "error" });
 		}
 
 		await RoomModel.joinRoom(roomID, username);
 		await UserModel.joinRoom(username, roomID);
 
-		console.log(`\tUser '${username}' joined room '${roomID}'`);
-		res.json({ message: `Room:'${roomID}' join success`, status: "success" });
+		console.log(`\t'${username}' joined room '${roomID}'`);
+		res.json({ message: `Room:'${roomID}' joined`, status: "success" });
 	}
 	catch (error) {
-		console.error("ERROR:\Failed to join room", error);
+		console.error("ERROR:\tFailed to join room", error);
 		res.status(500).json({ error: "Database error" });
 	}
 };
@@ -110,7 +110,7 @@ const fetchAllRooms = async (req, res) => {
 		res.json({ rooms, status: "success" });
 	}
 	catch (error) {
-		console.error("ERROR:\Failed to fetch all rooms", error);
+		console.error("ERROR:\tFailed to fetch all rooms", error);
 		res.status(500).json({ error: "Database error" });
 	}
 };

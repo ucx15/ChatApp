@@ -38,4 +38,4 @@ router.post('/room/messages', authController.authorize, roomController.fetchMess
 module.exports = router;
 
 // TODO: change fething requests to GET requests
-// TODO: make logout route
+

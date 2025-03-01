@@ -1,8 +1,8 @@
-if ( ! LS_getUsername()) {
+if (!LS_getUsername()) {
 	window.location.href = './login.html';
 }
 
-if ( !LS_getRefreshToken() ) {
+if (!LS_getRefreshToken()) {
 	window.location.href = './login.html';
 }
 
@@ -47,7 +47,7 @@ const usernameHeading = document.querySelector('#username-heading');
 
 const searchContainer = document.querySelector('#search-container');
 const searchField = document.querySelector('#input-ux-search');
-const searchBtn = document.querySelector('#btn-side-search');
+const btnSearch = document.querySelector('#btn-side-search');
 const btnLogout = document.querySelector('#logout-btn');
 
 
@@ -60,7 +60,7 @@ const btnNewChat = document.querySelector('#btn-new-chat');
 const btnNewChannel = document.querySelector('#btn-new-channel');
 
 const chatArea = document.getElementById('chatarea');
-
+const chatAreaTitle = document.getElementById('chat-area-title');
 
 var sidebar = document.getElementById('sidebar');
 var sbToggleImg = document.getElementById('sb-toggle-img');
@@ -83,18 +83,18 @@ let currentActiveChannel = null;
 
 let isMainContentVisible = true;
 let isChatAreaVisible = false;
-
+let typeFocusOn = inputText;
 
 // <------ Switch Chats/Channels ------>
 
 // TODO: Collapse sidebar on mobile view when a chat is selected
 function switchChat(chatID) {
-	if ( isMainContentVisible ) {
+	if (isMainContentVisible) {
 		isMainContentVisible = false;
 		mainContentContainer.classList.toggle('HIDE-ELEMENT');
 	}
 
-	if ( !isChatAreaVisible ) {
+	if (!isChatAreaVisible) {
 		isChatAreaVisible = true;
 		chatArea.classList.toggle('HIDE-ELEMENT');
 	}
@@ -114,6 +114,7 @@ function switchChat(chatID) {
 
 	// TODO: change chat area header name
 	resetChatArea();
+	chatAreaTitle.innerHTML = chatID;
 
 	// Tell server that client selected current chat
 	if (SOCKET.readyState !== WebSocket.OPEN) {
@@ -123,7 +124,7 @@ function switchChat(chatID) {
 
 	SOCKET.send(JSON.stringify(
 		{
-			type:'join-chat',
+			type: 'join-chat',
 			chatID,
 			username: USER,
 		}
@@ -209,7 +210,7 @@ async function handleFetchUserChats() {
 }
 
 // TODO: To be implemented
-async function handleFetchUserChannels() {}
+async function handleFetchUserChannels() { }
 
 
 async function handleNewChat() {
@@ -228,6 +229,7 @@ async function handleNewChat() {
 
 		if (res.ok) {
 			addNewChattoUI(data.roomID);
+			switchChat(data.roomID);
 			return;
 		}
 
@@ -245,7 +247,7 @@ async function handleNewChat() {
 }
 
 // TODO: To be implemented
-async function handleNewChannel() {}
+async function handleNewChannel() { }
 
 
 
@@ -272,6 +274,46 @@ function scrollMsgsToBottom() {
 	divMsgs.scrollTop = divMsgs.scrollHeight;
 }
 
+
+// <------ Searching ------>
+async function searchJoinChat() {
+	const chatID = searchField.value.trim();
+	if (!chatID) return;
+
+	try {
+		const res = await fetch(`${BACKEND_URI}/api/room/join`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${LS_getAccessToken()}`
+			},
+			body: JSON.stringify({ username: USER, roomID: chatID })
+		})
+
+		const data = await res.json();
+		console.log(`searchJoinChat() -> '${data.status}' : ${data.message}`);
+
+		if (res.ok) {
+			addNewChattoUI(chatID);
+			searchField.value = "";
+		}
+
+		else if (res.status === 403) {
+			if (await refreshAccessToken()) {
+				searchJoinChat();
+			}
+		}
+		else {
+			alert(data.message);
+		}
+
+	}
+
+	catch (err) {
+		console.error(err)
+	}
+
+}
 
 
 // <------ Message Functions ------>
@@ -321,7 +363,7 @@ function sendMsgtoServer(msg) {
 	}
 	SOCKET.send(JSON.stringify(
 		{
-			type:'message',
+			type: 'message',
 			msg,
 			room: currentActiveChat,
 		}
@@ -355,7 +397,13 @@ function sendMsg() {
 // UI
 document.addEventListener('keydown', (event) => {
 	// Automatically focus on the text input when typing starts
-	if (document.activeElement !== inputText && event.key.length === 1) {
+
+	if (document.activeElement === searchField && event.key.length === 1) {
+		searchField.focus();
+		return;
+	}
+
+	else if (document.activeElement !== inputText && event.key.length === 1) {
 		inputText.focus();
 	}
 
@@ -369,13 +417,17 @@ inputText.addEventListener('keyup', function (event) {
 	if (event.key === "Enter") sendMsg()
 });
 
+searchField.addEventListener('keyup', function (event) {
+	if (event.key === "Enter") searchJoinChat()
+});
+
 
 buttonSend.addEventListener('click', sendMsg);
 
 btnLogout.addEventListener('click', logout);
 
+btnSearch.addEventListener('click', searchJoinChat);
 
-// TODO: Switch to new room created
 btnNewChat.addEventListener('click', handleNewChat);
 
 btnNewChannel.addEventListener('click', handleNewChannel);
@@ -383,7 +435,7 @@ btnNewChannel.addEventListener('click', handleNewChannel);
 
 // Network
 function newWSConnection() {
-	if ( SOCKET ) {
+	if (SOCKET) {
 		SOCKET.close();
 	}
 
@@ -419,7 +471,7 @@ function wsHandle() {
 			case 'error':
 				if (data.message === "Invalid Access Token") {
 					console.warn("WARN: Invalid Access Token. refreshing the token.");
-					if ( refreshAccessToken() ) {
+					if (refreshAccessToken()) {
 						newWSConnection();
 					}
 				}
@@ -474,7 +526,6 @@ wsHandle();
 
 // TODO: Send JWT "accessToken" in ws messages also
 
-// TODO: Fetch user chats from the server
 // TODO: Message delivery status to be implemented
 // TODO: Server connection status to be displayed in the UI, and reconnection attempts
 // TODO: messages sent after disconnection to be sent to the server after reconnection
