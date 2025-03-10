@@ -103,6 +103,8 @@ const fetchRooms = async (req, res) => {
 			return;
 		}
 
+		// TODO: check if user exists in the room before adding
+
 		const rooms = await UserModel.fetchRooms(username);
 		console.log(`Rooms fetched for user:'${username}'`);
 		res.json({ message: "Rooms Fetched.", status: "success", rooms });
